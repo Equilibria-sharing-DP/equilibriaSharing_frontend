@@ -15,6 +15,13 @@ const geistMono = localFont({
     weight: "100 900",
 });
 
+export const metadata = {
+    title: "Equilibira Sharing - Mieterdaten Management",
+    icons: {
+        icon: "/img/icon.png",
+    },
+};
+
 export default function TenantRegistrationLayout({
                                                      children,
                                                  }: Readonly<{
