@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import {Navbar} from "@/components/tenantRegistrationComponents/navbar";
 import "../globals.css";
 import {Footer} from "@/components/footer";
+import {ThemeProvider} from "@/components/theme-provider";
 
 const geistSans = localFont({
     src: "../fonts/GeistVF.woff",
@@ -22,9 +23,11 @@ export default function TenantRegistrationLayout ({
     return (
         <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-            <Navbar/>
-            {children}
-            <Footer />
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                <Navbar/>
+                {children}
+                <Footer />
+            </ThemeProvider>
         </body>
         </html>
     );

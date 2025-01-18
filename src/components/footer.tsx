@@ -1,34 +1,42 @@
 import Link from "next/link";
 import Image from "next/image";
-import React from "react";
+import { Button } from "@/components/ui/button";
 
-export const Footer = () => {
+export function Footer() {
     return (
-        <div className="relative container p-8 mx-auto xl:px-0">
+        <footer className="container relative p-8 mx-auto xl:px-0">
+            <div className="grid max-w-screen-xl grid-cols-1 gap-4 pt-10 mx-auto border-t border-gray-10 lg:grid-cols-3">
+                <div className="flex justify-center lg:justify-start">
 
-                <div className="grid max-w-screen-xl grid-cols-1 lg:grid-cols-3 gap-4 pt-10 mx-auto border-t border-gray-10">
-                    <div className="flex justify-center lg:justify-start">
-                        <Link href="/">
-              <span className="flex space-x-2 text-2xl font-medium text-indigo-500 dark:text-gray-100">
-                <Image
-                    src="/img/logo.webp"
-                    alt="Logo"
-                    width="240"
-                    height="240"
-                />
-              </span>
-                        </Link>
-                    </div>
-                    <div className="flex justify-center items-center flex-col mt-[3rem] lg:mt-0"></div>
-                    <div className="flex justify-center text-center align-middle lg:justify-end lg:text-right flex-col mt-[3rem] lg:mt-0 mb-14">
-                        <h3>Diplomarbeit - Equilibira Sharing</h3>
-                        <p>Wexstraße 19-23</p>
-                        <p>1200 Wien</p>
-                        <p>Copyright © 2024</p>
-                        <p>All rights reserved.</p>
-                    </div>
+                    <span className="flex space-x-2">
+                      <Image
+                          src="/img/logo.webp"
+                          alt="Logo"
+                          width={240}
+                          height={240}
+                      />
+                    </span>
+
                 </div>
-
-        </div>
+                <div className="flex flex-col items-center justify-center mt-12 lg:mt-0">
+                    <Button asChild variant="link">
+                        <Link href="/impressum">Impressum</Link>
+                    </Button>
+                    <Button asChild variant="link">
+                        <Link href="/kontakt">Kontakt</Link>
+                    </Button>
+                    <Button asChild variant="link">
+                        <Link href="/datenschutz">Datenschutz</Link>
+                    </Button>
+                </div>
+                <div className="flex flex-col items-center justify-center mt-12 text-center lg:items-end lg:justify-end lg:text-right lg:mt-0 mb-14">
+                    <h3>Diplomarbeit - Equilibira Sharing</h3>
+                    <p>Wexstraße 19-23</p>
+                    <p>1200 Wien</p>
+                    <p>Copyright © 2024</p>
+                    <p>All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
     );
-};
+}
