@@ -1,5 +1,6 @@
 import localFont from "next/font/local";
 import {Navbar} from "@/components/tenantDataManagmentComponents/navbar";
+import {Footer} from "@/components/footer"
 import "../globals.css";
 
 const geistSans = localFont({
@@ -19,9 +20,7 @@ export default function TenantDataManagementLayout({
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <Navbar/>
                 {children}
-                <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-                    Footer TenantDataManagement
-                </footer>
+                <Footer />
         </body>
         </html>
     );

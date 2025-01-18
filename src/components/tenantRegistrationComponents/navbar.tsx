@@ -3,14 +3,14 @@ import Link from "next/link";
 
 export const Navbar = () => {
     const navigation = [
-        "Projektbeschreibung"
+        "Beispiel"
     ];
     return (
         <div className="w-full">
             <nav className="container relative flex flex-wrap items-center justify-between p-8 mx-auto lg:justify-between xl:px-1">
                 <Link href="/">
                   <span className="flex items-center space-x-2 text-2xl font-medium ">
-                    <span>Equilibira Sharing</span>
+                    <span>Equilibira Sharing - Mieterdaten Erfassung</span>
                   </span>
                 </Link>
 
