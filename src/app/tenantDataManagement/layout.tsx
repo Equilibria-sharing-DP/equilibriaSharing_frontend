@@ -11,8 +11,8 @@ const geistMono = localFont({
 });
 
 export default function TenantDataManagementLayout({
-                                                       children,
-                                                   }: Readonly<{
+       children,
+   }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
