@@ -1,11 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 
 export function Footer() {
     return (
         <footer className="container relative p-8 mx-auto xl:px-0">
-            <div className="grid max-w-screen-xl grid-cols-1 gap-4 pt-10 mx-auto border-t border-gray-10 lg:grid-cols-3">
+            <div
+                className="grid max-w-screen-xl grid-cols-1 gap-4 pt-10 mx-auto border-t border-gray-10 lg:grid-cols-3">
                 <div className="flex justify-center lg:justify-start">
 
                     <span className="flex space-x-2">
@@ -29,7 +30,8 @@ export function Footer() {
                         <Link href="/datenschutz">Datenschutz</Link>
                     </Button>
                 </div>
-                <div className="flex flex-col items-center justify-center mt-12 text-center lg:items-end lg:justify-end lg:text-right lg:mt-0 mb-14">
+                <div
+                    className="flex flex-col items-center justify-center mt-12 text-center lg:items-end lg:justify-end lg:text-right lg:mt-0 mb-14">
                     <h3>Diplomarbeit - Equilibira Sharing</h3>
                     <p>Wexstraße 19-23</p>
                     <p>1200 Wien</p>

@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {UserDropdown} from "@/components/tenantDataManagmentComponents/user-dropdown";
 
 export const Navbar = () => {
     const navigation = [
-        { name: "Beispiel", href: "/#" }, // Passen Sie den Link hier an
+        {name: "Beispiel", href: "/#"}, // Passen Sie den Link hier an
     ];
 
     return (
@@ -24,7 +24,7 @@ export const Navbar = () => {
                                 </Button>
                             </li>
                         ))}
-                        <UserDropdown />
+                        <UserDropdown/>
                     </ul>
                 </div>
             </nav>

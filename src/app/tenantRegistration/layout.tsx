@@ -15,19 +15,19 @@ const geistMono = localFont({
     weight: "100 900",
 });
 
-export default function TenantRegistrationLayout ({
-        children,
-    }: Readonly<{
+export default function TenantRegistrationLayout({
+                                                     children,
+                                                 }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
         <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-                <Navbar/>
-                {children}
-                <Footer />
-            </ThemeProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <Navbar/>
+            {children}
+            <Footer/>
+        </ThemeProvider>
         </body>
         </html>
     );

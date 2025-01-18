@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {ModeToggle} from "@/components/mode-toggle";
 
 export const Navbar = () => {
     const navigation = [
-        { name: "Beispiel", href: "/#" }, // Passen Sie den Link hier an
+        {name: "Beispiel", href: "/#"}, // Passen Sie den Link hier an
     ];
 
     return (
