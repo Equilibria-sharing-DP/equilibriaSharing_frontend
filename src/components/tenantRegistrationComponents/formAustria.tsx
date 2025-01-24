@@ -41,10 +41,23 @@ const formSchema = z.object({
         staat: z.string().min(1, 'Staat ist erforderlich'),
     }),
     adresse: z.object({
-        strasse: z.string().min(1, 'Straße/Gasse/Platz ist erforderlich'),
-        postleitzahl: z.string().min(1, 'Postleitzahl ist erforderlich'),
-        ortsgemeinde: z.string().min(1, 'Ortsgemeinde ist erforderlich'),
-        staat: z.string().min(1, 'Staat ist erforderlich'),
+        city: z
+            .string()
+            .min(1, { message: "Die Stadt ist erforderlich." }),
+        postalCode: z
+            .number()
+            .int({ message: "Die Postleitzahl muss eine Ganzzahl sein." })
+            .positive({ message: "Die Postleitzahl muss positiv sein." }),
+        street: z
+            .string()
+            .min(1, { message: "Die Straße ist erforderlich." }),
+        houseNumber: z
+            .number()
+            .int({ message: "Die Hausnummer muss eine Ganzzahl sein." })
+            .positive({ message: "Die Hausnummer muss positiv sein." }),
+        addressAdditional: z
+            .string()
+            .optional(),
     }),
     mitreisende: z.array(z.object({
         familienname: z.string().min(1, 'Familienname ist erforderlich'),
@@ -77,78 +90,168 @@ export function FormAustria() {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <FormField
-                    control={form.control}
-                    name="familienname"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Familienname</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                <div>
+                    <h3 className="text-lg font-semibold">Name</h3>
+                    <div className="flex space-x-4">
+                        <FormField
+                            control={form.control}
+                            name="familienname"
+                            render={({field}) => (
+                                <FormItem className="flex-1">
+                                    <FormLabel>Familienname</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="vorname"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Vorname</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="vorname"
+                            render={({field}) => (
+                                <FormItem className="flex-1">
+                                    <FormLabel>Vorname</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
 
-                <FormField
-                    control={form.control}
-                    name="geschlecht"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Geschlecht</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Geschlecht auswählen" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    {genderOptions.map((option) => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                </div>
 
-                <FormField
-                    control={form.control}
-                    name="geburtsdatum"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                            <FormLabel>Geburtsdatum</FormLabel>
-                            <DatePickerYear
-                                date={field.value}
-                                setDate={field.onChange}
-                            />
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                <div className="flex space-x-4">
+                    <FormField
+                        control={form.control}
+                        name="geschlecht"
+                        render={({field}) => (
+                            <FormItem className="flex-1">
+                                <FormLabel>Geschlecht</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Geschlecht auswählen"/>
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {genderOptions.map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+
+
+                    <FormField
+                        control={form.control}
+                        name="geburtsdatum"
+                        render={({field}) => (
+                            <FormItem className="flex-1">
+                                <FormLabel>Geburtsdatum</FormLabel>
+                                <DatePickerYear
+                                    date={field.value}
+                                    setDate={field.onChange}
+                                />
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <div>
+                    <h3 className="text-lg font-semibold">Adresse</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="adresse.city"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Ortsname</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="adresse.postalCode"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Postleitzahl</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    {/* Gasse, Hausnummer und Adresszusatz in einer Zeile */}
+                    <div className="grid grid-cols-3 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="adresse.street"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Gasse/Straße</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="adresse.houseNumber"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Hausnummer</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="adresse.addressAdditional"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Adresszusatz</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
 
                 <FormField
                     control={form.control}
                     name="staatsangehoerigkeit"
-                    render={({ field }) => (
+                    render={({field}) => (
                         <FormItem>
                             <FormLabel>Staatsangehörigkeit</FormLabel>
                             <FormControl>
@@ -158,137 +261,83 @@ export function FormAustria() {
                                     value={field.value}
                                 />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage/>
                         </FormItem>
                     )}
                 />
 
+                <div>
+                    <h3 className="text-lg font-semibold">Reisedokument</h3>
+                    <FormField
+                        control={form.control}
+                        name="reisedokument.typ"
+                        render={({field}) => (
+                            <FormItem>
+                                <FormLabel>Reisedokument</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Dokumenttyp auswählen"/>
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {documentTypes.map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
 
-                <FormField
-                    control={form.control}
-                    name="reisedokument.typ"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Reisedokument</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormField
+                        control={form.control}
+                        name="reisedokument.ausstellungsdatum"
+                        render={({field}) => (
+                            <FormItem className="flex flex-col">
+                                <FormLabel>Ausstellungsdatum</FormLabel>
+                                <DatePickerYear
+                                    date={field.value}
+                                    setDate={field.onChange}
+                                />
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="reisedokument.ausstellendeBehörde"
+                        render={({field}) => (
+                            <FormItem>
+                                <FormLabel>Ausstellende Behörde</FormLabel>
                                 <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Dokumenttyp auswählen" />
-                                    </SelectTrigger>
+                                    <Input {...field} />
                                 </FormControl>
-                                <SelectContent>
-                                    {documentTypes.map((option) => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
 
-                <FormField
-                    control={form.control}
-                    name="reisedokument.ausstellungsdatum"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                            <FormLabel>Ausstellungsdatum</FormLabel>
-                            <DatePickerYear
-                                date={field.value}
-                                setDate={field.onChange}
-                            />
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="reisedokument.ausstellendeBehörde"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Ausstellende Behörde</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="reisedokument.staat"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Ausstellender Staat</FormLabel>
-                            <CountryDropdown
-                                placeholder="Land auswählen"
-                                onChange={field.onChange}
-                                value={field.value}
-                            />
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="adresse.strasse"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Straße/Gasse/Platz</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="adresse.postleitzahl"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Postleitzahl</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="adresse.ortsgemeinde"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Ortsgemeinde</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="adresse.staat"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Staat</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                    <FormField
+                        control={form.control}
+                        name="reisedokument.staat"
+                        render={({field}) => (
+                            <FormItem>
+                                <FormLabel>Ausstellender Staat</FormLabel>
+                                <CountryDropdown
+                                    placeholder="Land auswählen"
+                                    onChange={field.onChange}
+                                    value={field.value}
+                                />
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                </div>
 
                 <div>
                     <h3 className="text-lg font-semibold">Mitreisende</h3>
@@ -297,40 +346,40 @@ export function FormAustria() {
                             <FormField
                                 control={form.control}
                                 name={`mitreisende.${index}.familienname`}
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Familienname</FormLabel>
                                         <FormControl>
                                             <Input {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name={`mitreisende.${index}.vorname`}
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Vorname</FormLabel>
                                         <FormControl>
                                             <Input {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name={`mitreisende.${index}.geburtsdatum`}
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <FormItem className="flex flex-col">
                                         <FormLabel>Geburtsdatum</FormLabel>
                                         <DatePickerYear
                                             date={field.value}
                                             setDate={field.onChange}
                                         />
-                                        <FormMessage />
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
@@ -342,44 +391,49 @@ export function FormAustria() {
                     <Button
                         type="button"
                         variant="outline"
-                        onClick={() => append({ familienname: '', vorname: '', geburtsdatum: new Date() })}
+                        onClick={() => append({familienname: '', vorname: '', geburtsdatum: new Date()})}
                     >
                         Mitreisenden hinzufügen
                     </Button>
                 </div>
 
-                <FormField
-                    control={form.control}
-                    name="ankunftsdatum"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                            <FormLabel>Ankunftsdatum</FormLabel>
-                            <DatePickerYear
-                                date={field.value}
-                                setDate={field.onChange}
-                            />
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                <div>
+                    <h3 className="text-lg font-semibold">Reisedatum</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="ankunftsdatum"
+                            render={({field}) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>Ankunftsdatum</FormLabel>
+                                    <DatePickerYear
+                                        date={field.value}
+                                        setDate={field.onChange}
+                                    />
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="abreisedatum"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                            <FormLabel>Voraussichtliches Abreisedatum</FormLabel>
-                            <DatePickerYear
-                                date={field.value}
-                                setDate={field.onChange}
-                            />
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="abreisedatum"
+                            render={({field}) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>Voraussichtliches Abreisedatum</FormLabel>
+                                    <DatePickerYear
+                                        date={field.value}
+                                        setDate={field.onChange}
+                                    />
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                </div>
+            </div>
 
                 <Button type="submit">Formular absenden</Button>
             </form>
         </Form>
-    );
+);
 }
