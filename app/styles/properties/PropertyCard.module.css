@@ -1,0 +1,73 @@
+.card {
+    @apply overflow-hidden rounded-xl border shadow-sm;
+  }
+  
+  .imageContainer {
+    @apply relative pb-[75%]; /* 4:3 Aspect Ratio */
+  }
+  
+  .image {
+    @apply absolute h-full w-full object-cover transition-opacity duration-300 ease-in-out;
+  }
+  
+  .imageButton {
+    @apply absolute top-1/2 -translate-y-1/2 bg-white/60 rounded-full shadow-md hover:bg-white transition-colors duration-200;
+  }
+  
+  .smallButton {
+    @apply p-1;
+  }
+  
+  .prevButton {
+    @apply left-2;
+  }
+  
+  .nextButton {
+    @apply right-2;
+  }
+  
+  .buttonIcon {
+    @apply w-4 h-4 text-gray-800;
+  }
+  
+  .imageDots {
+    @apply absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2;
+  }
+  
+  .dot {
+    @apply w-2 h-2 rounded-full bg-white/60;
+  }
+  
+  .activeDot {
+    @apply bg-white;
+  }
+  
+  .content {
+    @apply p-4;
+  }
+  
+  .title {
+    @apply text-lg font-semibold;
+  }
+  
+  .address {
+    @apply text-sm text-gray-600;
+  }
+  
+  .type {
+    @apply mt-2 text-sm text-gray-500;
+  }
+  
+  .dates {
+    @apply mt-2 text-sm text-gray-500;
+  }
+  
+  .price {
+    @apply mt-2 text-lg font-bold;
+  }
+  
+  .pricePerNight {
+    @apply text-sm font-normal text-gray-600;
+  }
+  
+  
