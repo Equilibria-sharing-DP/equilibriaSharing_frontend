@@ -1,29 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {useFieldArray, useForm} from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { DatePickerYear } from "@/components/date-picker-year";
-import { DatePicker } from "@/components/date-picker";
-import { CountryDropdown } from "@/components/country-dropdown-menu";
-import { Progress } from "@/components/ui/progress";
+import {Button} from "@/components/ui/button";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
+import {DatePickerYear} from "@/components/date-picker-year";
+import {DatePicker} from "@/components/date-picker";
+import {CountryDropdown} from "@/components/country-dropdown-menu";
+import {Progress} from "@/components/ui/progress";
 
 const genderOptions = [
     { value: "männlich", label: "Männlich" },
@@ -43,20 +30,16 @@ const formSchema = z.object({
     geburtsdatum: z.date(),
     adresse: z.object({
         city: z.string().min(1, { message: "Die Stadt ist erforderlich." }),
-        postalCode: z.number().positive({
-            message: "Die Postleitzahl muss positiv sein.",
-        }),
+        postalCode: z.preprocess((val) => Number(val), z.number().int().positive("Postleitzahl muss eine positive Zahl sein")),
         street: z.string().min(1, { message: "Die Straße ist erforderlich." }),
-        houseNumber: z.number().positive({
-            message: "Die Hausnummer muss positiv sein.",
-        }),
+        houseNumber: z.preprocess((val) => Number(val), z.number().int().positive("Die Hausnummer muss positiv sein.")),
         addressAdditional: z.string().optional(),
         staat: z.string().min(1, { message: "Der Staat ist erforderlich." }),
     }),
     reisedokument: z.object({
         typ: z.enum(["reisepass", "personalausweis"]),
         ausstellungsdatum: z.date(),
-        ausstellendeBehörde: z.string().min(1, "Ausstellende Behörde ist erforderlich"),
+        ausstellendeBehoerde: z.string().min(1, "Ausstellende Behörde ist erforderlich"),
         staat: z.string().min(1, "Staat ist erforderlich"),
     }),
     ankunftsdatum: z.date(),
@@ -87,9 +70,45 @@ export function FormAustria() {
         name: 'mitreisende',
     });
 
+    const validateCurrentPage = async () => {
+        const fieldNames = [
+            // Gib die Feldnamen an, die auf der aktuellen Seite geprüft werden sollen
+            currentPage === 0 && ["familienname", "vorname", "geschlecht", "geburtsdatum"],
+            currentPage === 1 && [
+                "adresse.city",
+                "adresse.postalCode",
+                "adresse.street",
+                "adresse.houseNumber",
+                "adresse.staat",
+            ],
+            currentPage === 2 && [
+                "reisedokument.typ",
+                "reisedokument.ausstellungsdatum",
+                "reisedokument.ausstellendeBehörde",
+                "reisedokument.staat",
+            ],
+            currentPage === 3 && ["ankunftsdatum", "abreisedatum"],
+            currentPage === 4 && fields.map((_, index) => [
+                `mitreisende.${index}.familienname`,
+                `mitreisende.${index}.vorname`,
+                `mitreisende.${index}.geburtsdatum`,
+            ]).flat(),
+        ].filter(Boolean).flat();
+
+        if (fieldNames.length > 0) {
+            return await form.trigger(fieldNames as Parameters<typeof form.trigger>[0]);
+        }
+        return true;
+    };
+
+
+    const handlePreviousPage = () => {
+        setCurrentPage((prev) => prev - 1);
+    };
+
     const onSubmit = (data: FormValues) => {
         console.log(data);
-    };
+    }
 
     const pages = [
         <div key="page1">
@@ -431,20 +450,23 @@ export function FormAustria() {
 
                 <div className="flex justify-between mt-4">
                     {currentPage > 0 && (
-                        <Button
-                            type="button"
-                            onClick={() => setCurrentPage((prev) => prev - 1)}
-                        >
+                        <Button type="button" onClick={handlePreviousPage}>
                             Zurück
                         </Button>
                     )}
                     {currentPage < pages.length - 1 ? (
                         <Button
                             type="button"
-                            onClick={() => setCurrentPage((prev) => prev + 1)}
+                            onClick={async () => {
+                                const isValid = await validateCurrentPage();
+                                if (isValid) {
+                                    setCurrentPage((prev) => prev + 1);
+                                }
+                            }}
                         >
                             Weiter
                         </Button>
+
                     ) : (
                         <Button type="submit">Abschicken</Button>
                     )}
