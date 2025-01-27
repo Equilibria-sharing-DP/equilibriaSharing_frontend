@@ -23,10 +23,8 @@ const documentTypes = [
     { value: "personalausweis", label: "Personalausweis" },
 ];
 
-// Hilfsfunktion zur sicheren Eingabe
 function sanitizeInput(input: string): string {
-    // Beispiel: Verwendung von DomPurify oder einer eigenen Lösung
-    return input.replace(/<\/?[^>]+(>|$)/g, ""); // Einfache Regex-basierte Sanitisierung
+    return input.replace(/<\/?[^>]+(>|$)/g, "");
 }
 
 const formSchema = z.object({
