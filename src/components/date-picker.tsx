@@ -25,9 +25,10 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
                 <Button
                     variant="outline"
                     className={cn(
-                        "w-[280px] justify-start text-left font-normal",
+                        "w-full max-w-md justify-start text-left font-normal", // größere max-w-Klasse für breitere Buttons
                         !date && "text-muted-foreground"
                     )}
+
                 >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {date ? format(date, "PPP") : <span>Pick a date</span>}
