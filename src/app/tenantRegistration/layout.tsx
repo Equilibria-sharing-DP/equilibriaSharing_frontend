@@ -1,6 +1,6 @@
 import localFont from "next/font/local";
 import {Navbar} from "@/components/tenantRegistrationComponents/navbar";
-import "../globals.css";
+import "@/app/globals.css";
 import {Footer} from "@/components/footer";
 import {ThemeProvider} from "@/components/theme-provider";
 

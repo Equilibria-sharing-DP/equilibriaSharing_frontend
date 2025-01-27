@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
-import {UserDropdown} from "@/components/tenantDataManagmentComponents/user-dropdown";
+import {UserDropdown} from "@/components/tenantDataManagementComponents/user-dropdown";
 
 export const Navbar = () => {
     const navigation = [
-        {name: "Beispiel", href: "/#"}, // Passen Sie den Link hier an
+        { name: "Immobilien Ansicht", href: "/tenantDataManagement/properties" },
+        { name: "Österreich Immobilien", href: "/tenantDataManagement/properties?country=austria" },
+        { name: "Italien Immobilien", href: "/tenantDataManagement/properties?country=italy" },
     ];
 
     return (
