@@ -1,5 +1,6 @@
 "use client";
 import React, {useState} from "react";
+
 import {useFieldArray, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -11,6 +12,7 @@ import {DatePickerYear} from "@/components/date-picker-year";
 import {DatePicker} from "@/components/date-picker";
 import {CountryDropdown} from "@/components/country-dropdown-menu";
 import {Progress} from "@/components/ui/progress";
+import {useRouter} from "next/navigation";
 
 const genderOptions = [
     { value: "männlich", label: "Männlich" },
@@ -21,6 +23,7 @@ const genderOptions = [
 const documentTypes = [
     { value: "reisepass", label: "Reisepass" },
     { value: "personalausweis", label: "Personalausweis" },
+    { value: "führerschein", label: "Führerschein" },
 ];
 
 function sanitizeInput(input: string): string {
@@ -114,6 +117,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function FormAustria() {
 
+    const router = useRouter()
     const [currentPage, setCurrentPage] = useState(0);
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -166,6 +170,10 @@ export function FormAustria() {
     const onSubmit = (data: FormValues) => {
         console.log(data);
     }
+
+    const handleSubmit = () => {
+        router.push("/tenantRegistration/registrationComplete");
+    };
 
     const pages = [
         <div key="page1">
@@ -238,16 +246,16 @@ export function FormAustria() {
             </div>
         </div>,
         <div key="page2">
-            <h3 className="text-lg font-semibold">Adresse<span className="text-red-500 ml-1">*</span></h3>
+            <h3 className="text-lg font-semibold">Adresse</h3>
             <div className="grid grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
                     name="adresse.city"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Stadt</FormLabel>
+                            <FormLabel>Stadt<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                                <Input {...field} />
+                            <Input {...field} />
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -560,7 +568,7 @@ export function FormAustria() {
                         </Button>
 
                     ) : (
-                        <Button type="submit">Abschicken</Button>
+                        <Button type="submit" onClick={handleSubmit}>Abschicken</Button>
                     )}
                 </div>
             </form>
