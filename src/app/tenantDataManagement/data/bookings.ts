@@ -8,10 +8,10 @@ export interface Booking {
   
   export const bookings: Booking[] = [
     {
-      startDate: "11.09.2024",
-      endDate: "17.09.2024",
-      guestName: "Megahed Mohamed",
-      birthDate: "01.01.2002",
+      startDate: "04.02.2025",
+      endDate: "11.02.2025",
+      guestName: "Müller Marcel",
+      birthDate: "29.05.1970",
       passportNumber: "U 126872387",
     },
     {

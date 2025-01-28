@@ -140,7 +140,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">ausstellende Behörde</label>
                 <input
                   type="text"
-                  defaultValue="MBA 6/7"
+                  defaultValue="BH Mistelbach"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
@@ -158,7 +158,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">Ausstellungsdatum</label>
                 <input
                   type="text"
-                  defaultValue="06.02.2017"
+                  defaultValue="13.01.2019"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
@@ -167,7 +167,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">Gültig bis</label>
                 <input
                   type="text"
-                  defaultValue="06.02.2027"
+                  defaultValue="14.01.2029"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
@@ -183,7 +183,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">Strasse</label>
                 <input
                   type="text"
-                  defaultValue="Gutensteinerstraße 3"
+                  defaultValue="Hauptstraße 30/1"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
@@ -192,7 +192,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">Postleitzahl</label>
                 <input
                   type="text"
-                  defaultValue="2751"
+                  defaultValue="2201"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
@@ -201,7 +201,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">Ort</label>
                 <input
                   type="text"
-                  defaultValue="Wiener Neustadt"
+                  defaultValue="Kapellerfeld"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
