@@ -69,7 +69,7 @@ export function PropertyCard({ property }: { property: Property }) {
           </div>
         </div>
         <div className="p-4">
-          <h3 className="text-lg font-semibold">Apartment in Wien</h3>
+          <h3 className="text-lg font-semibold">{property.name}</h3>
           <p className="text-sm text-gray-600">
             {property.address.city}, {property.address.country}
           </p>
@@ -83,7 +83,7 @@ export function PropertyCard({ property }: { property: Property }) {
             {new Date().toLocaleString("default", { month: "short" })}
           </p>
           <p className="mt-2 text-lg font-bold">
-            140€
+            {property.pricePerNight}€
             <span className="text-sm font-normal text-gray-600"> / Nacht</span>
           </p>
         </div>

@@ -1,7 +1,7 @@
 [
     {
       "id": 4,
-      "name": "Luxuriöses Apartment mit Bergblick",
+      "name": "Apartment in Wien",
       "type": "Gastgeber ist Christian",
       "description": "Modernes und luxuriöses Apartment in den österreichischen Alpen",
       "address": {
@@ -13,7 +13,7 @@
         "country": "Österreich"
       },
       "maxGuests": 4,
-      "pricePerNight": 250.0,
+      "pricePerNight": 160.0,
       "images": [
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer6-VMYPnDyh1wq8vfW3Sw4Qy3qC3dBreW.png",
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer2-NG0MWOF7Oqhs8oVv4gPhWsiEeVfS6F.png",
@@ -37,7 +37,7 @@
         "country": "Italien"
       },
       "maxGuests": 100,
-      "pricePerNight": 1117.0,
+      "pricePerNight": 713.0,
       "images": [
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/VillaRom1-ezjfDHqxPqc8gqo5XpFaceXuQ9aB1E.jpeg",
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/VillaRom2.jpg-vwWVJFFumiVzvIcy9KrkCmLIjzyihM.jpeg",
@@ -58,7 +58,7 @@
         "country": "Kroatien"
       },
       "maxGuests": 5,
-      "pricePerNight": 194.0,
+      "pricePerNight": 230.0,
       "images": [
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AlpineLodge1-rTbMAiZs0fbpZHLBpo2uSESBmYaNX7.jpeg",
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AlpineLodge2-EnehslsaMQT3sQX2gPlD9loKB02bii.jpeg",
@@ -79,7 +79,7 @@
         "country": "Kroatien"
       },
       "maxGuests": 4,
-      "pricePerNight": 585.0,
+      "pricePerNight": 185.0,
       "images": [
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/UrbanRetreat1.jpg-D3DNINaON9pGowHhA8RjCEaVrSHNtX.jpeg",
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/UrbanRetreat2.jpg-kYx1AnjM4k1DoFK8T7A4qmgBhZnd8w.jpeg",
