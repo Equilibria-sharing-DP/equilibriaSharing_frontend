@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function RegistrationSuccessPage() {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-white p-4">
+        <div className="min-h-screen flex flex-col items-center justify-center">
             <div className="mb-8">
                 <Image
                     src="/img/logo.webp"
