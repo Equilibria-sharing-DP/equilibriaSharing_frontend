@@ -182,24 +182,27 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="vorname"
-                    render={({field}) => (
+                    render={({ field, fieldState }) => ( // fieldState enthält die Validierungsfehler
                         <FormItem>
-                            <FormLabel>Vorname<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormLabel>
+                                Vorname<span className="text-red-500 ml-1">*</span>
+                            </FormLabel>
                             <FormControl>
-                            <Input {...field}/>
+                                <Input {...field} error={!!fieldState.error} />
                             </FormControl>
-                            <FormMessage/>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
+
                 <FormField
                     control={form.control}
                     name="familienname"
-                    render={({field}) => (
+                    render={({ field, fieldState }) => (
                         <FormItem>
                             <FormLabel>Familienname<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <Input {...field} />
+                                <Input {...field} error={!!fieldState.error} />
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -208,13 +211,15 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="geschlecht"
-                    render={({field}) => (
+                    render={({ field, fieldState }) => (
                         <FormItem>
-                            <FormLabel>Geschlecht<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormLabel>
+                                Geschlecht<span className="text-red-500 ml-1">*</span>
+                            </FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Geschlecht auswählen"/>
+                                    <SelectTrigger error={!!fieldState.error}>
+                                        <SelectValue placeholder="Geschlecht auswählen" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
@@ -225,19 +230,21 @@ export function FormAustria() {
                                     ))}
                                 </SelectContent>
                             </Select>
-                            <FormMessage/>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
+
                 <FormField
                     control={form.control}
                     name="geburtsdatum"
-                    render={({field}) => (
+                    render={({field, fieldState}) => (
                         <FormItem className="flex-1">
                             <FormLabel>Geburtsdatum<span className="text-red-500 ml-1">*</span></FormLabel>
                             <DatePickerYear
                                 date={field.value}
                                 setDate={field.onChange}
+                                error={!!fieldState.error}
                             />
                             <FormMessage/>
                         </FormItem>
@@ -251,11 +258,11 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="adresse.city"
-                    render={({field}) => (
+                    render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Stadt<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <Input {...field} />
+                            <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -264,24 +271,35 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="adresse.postalCode"
-                    render={({field}) => (
+                    render={({ field, fieldState }) => (
                         <FormItem>
                             <FormLabel>Postleitzahl<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <Input type="number" {...field} />
+                                <Input
+                                    type="number"  // Beibehaltung von type="number"
+                                    {...field}
+                                    inputMode="numeric"  // Setzt den Eingabemodus auf numerisch
+                                    pattern="\d+"  // Validiert nur ganze Zahlen (keine Sonderzeichen)
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/\D/g, ''); // Entfernt alle nicht-Ziffern
+                                        field.onChange(value); // Wert des Formulars wird aktualisiert
+                                    }}
+                                    error={!!fieldState.error}
+                                />
                             </FormControl>
-                            <FormMessage/>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
+
                 <FormField
                     control={form.control}
                     name="adresse.street"
-                    render={({field}) => (
+                    render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Straße<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <Input {...field} />
+                            <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -290,11 +308,11 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="adresse.houseNumber"
-                    render={({field}) => (
+                    render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Hausnummer<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <Input type="number" {...field} />
+                            <Input type="number" {...field} error={!!fieldState.error}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -303,11 +321,11 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="adresse.addressAdditional"
-                    render={({field}) => (
+                    render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Adresszusatz</FormLabel>
                             <FormControl>
-                                <Input {...field} />
+                                <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -316,13 +334,14 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="adresse.staat"
-                    render={({field}) => (
+                    render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Staatsangehörigkeit<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
                             <CountryDropdown
                                     placeholder="Land auswählen"
                                     onChange={field.onChange}
+                                    error={!!fieldState.error}
                                     value={field.value}
                                 />
                             </FormControl>
@@ -338,12 +357,12 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="reisedokument.typ"
-                    render={({field}) => (
+                    render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Dokumenttyp<span className="text-red-500 ml-1">*</span></FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger error={!!fieldState.error}>
                                         <SelectValue placeholder="Dokumenttyp auswählen"/>
                                     </SelectTrigger>
                                 </FormControl>
@@ -362,12 +381,13 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="reisedokument.ausstellungsdatum"
-                    render={({field}) => (
+                    render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Ausstellungsdatum<span className="text-red-500 ml-1">*</span></FormLabel>
                             <DatePickerYear
                                 date={field.value}
                                 setDate={field.onChange}
+                                error={!!fieldState.error}
                             />
                             <FormMessage/>
                         </FormItem>
@@ -376,11 +396,11 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="reisedokument.ausstellendeBehoerde"
-                    render={({field}) => (
+                    render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Ausstellende Behörde<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <Input {...field} />
+                            <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -389,13 +409,14 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="reisedokument.staat"
-                    render={({field}) => (
+                    render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Ausstellender Staat<span className="text-red-500 ml-1">*</span></FormLabel>
                             <CountryDropdown
                                 placeholder="Land auswählen"
                                 onChange={field.onChange}
                                 value={field.value}
+                                error={!!fieldState.error}
                             />
                             <FormMessage/>
                         </FormItem>
@@ -404,11 +425,11 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="reisedokument.reisepassNummer"
-                    render={({field}) => (
+                    render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Reisepass Nummer<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <Input {...field} />
+                            <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -422,12 +443,13 @@ export function FormAustria() {
                     <FormField
                         control={form.control}
                         name="ankunftsdatum"
-                        render={({field}) => (
+                        render={({field, fieldState}) => (
                             <FormItem className="flex flex-col">
                                 <FormLabel>Ankunftsdatum<span className="text-red-500 ml-1">*</span></FormLabel>
                                 <DatePicker
                                     date={field.value}
                                     setDate={field.onChange}
+                                    error={!!fieldState.error}
                                 />
                                 <FormMessage/>
                             </FormItem>
@@ -437,13 +459,14 @@ export function FormAustria() {
                     <FormField
                         control={form.control}
                         name="abreisedatum"
-                        render={({field}) => (
+                        render={({field, fieldState}) => (
                             <FormItem className="flex flex-col">
                                 <FormLabel>Voraussichtliches Abreisedatum<span
                                     className="text-red-500 ml-1">*</span></FormLabel>
                                 <DatePicker
                                     date={field.value}
                                     setDate={field.onChange}
+                                    error={!!fieldState.error}
                                 />
                                 <FormMessage/>
                             </FormItem>
@@ -465,11 +488,11 @@ export function FormAustria() {
                                 <FormField
                                     control={form.control}
                                     name={`mitreisende.${index}.vorname`}
-                                    render={({field}) => (
+                                    render={({field, fieldState}) => (
                                         <FormItem>
                                             <FormLabel>Vorname<span className="text-red-500 ml-1">*</span></FormLabel>
                                             <FormControl>
-                                                <Input {...field} placeholder="Vorname eingeben"/>
+                                                <Input {...field} placeholder="Vorname eingeben" error={!!fieldState.error}/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -479,12 +502,12 @@ export function FormAustria() {
                                 <FormField
                                     control={form.control}
                                     name={`mitreisende.${index}.familienname`}
-                                    render={({field}) => (
+                                    render={({field, fieldState}) => (
                                         <FormItem>
                                             <FormLabel>Familienname<span
                                                 className="text-red-500 ml-1">*</span></FormLabel>
                                             <FormControl>
-                                                <Input {...field} placeholder="Familienname eingeben"/>
+                                                <Input {...field} placeholder="Familienname eingeben" error={!!fieldState.error}/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -494,13 +517,14 @@ export function FormAustria() {
                                 <FormField
                                     control={form.control}
                                     name={`mitreisende.${index}.geburtsdatum`}
-                                    render={({field}) => (
+                                    render={({field, fieldState}) => (
                                         <FormItem>
                                             <FormLabel>Geburtsdatum<span
                                                 className="text-red-500 ml-1">*</span></FormLabel>
                                             <DatePickerYear
                                                 date={field.value}
                                                 setDate={field.onChange}
+                                                error={!!fieldState.error}
                                             />
                                             <FormMessage/>
                                         </FormItem>
@@ -548,7 +572,7 @@ export function FormAustria() {
 
                 {pages[currentPage]}
 
-                <div className="flex justify-between mt-4">
+                <div className={`flex mt-4 ${currentPage === 0 ? "justify-end" : "justify-between"}`}>
                     {currentPage > 0 && (
                         <Button type="button" onClick={handlePreviousPage}>
                             Zurück
@@ -566,12 +590,14 @@ export function FormAustria() {
                         >
                             Weiter
                         </Button>
-
                     ) : (
-                        <Button type="submit" onClick={handleSubmit}>Abschicken</Button>
+                        <Button type="submit" onClick={handleSubmit}>
+                            Abschicken
+                        </Button>
                     )}
                 </div>
             </form>
         </Form>
     );
+
 }

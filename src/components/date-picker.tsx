@@ -16,9 +16,10 @@ import {
 interface DatePickerProps {
     date: Date | undefined;
     setDate: (date: Date | undefined) => void;
+    error?: boolean;
 }
 
-export function DatePicker({ date, setDate }: DatePickerProps) {
+export function DatePicker({ date, setDate, error }: DatePickerProps) {
     return (
         <Popover>
             <PopoverTrigger asChild>
@@ -26,7 +27,10 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
                     variant="outline"
                     className={cn(
                         "w-full max-w-md justify-start text-left font-normal", // größere max-w-Klasse für breitere Buttons
-                        !date && "text-muted-foreground"
+                        !date && "text-muted-foreground",
+                        error
+                        ? "border-red-500 bg-red-50 focus-visible:ring-red-500" // Fehler-Styles
+                        : "border-input focus-visible:ring-ring"
                     )}
 
                 >

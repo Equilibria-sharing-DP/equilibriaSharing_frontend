@@ -14,9 +14,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 interface DatePickerYearProps {
     date: Date | undefined
     setDate: (date: Date | undefined) => void
+    error?: boolean // Optional error prop
 }
 
-export function DatePickerYear({ date, setDate }: DatePickerYearProps) {
+export function DatePickerYear({ date, setDate, error }: DatePickerYearProps) {
     const [month, setMonth] = React.useState<number>(date ? date.getMonth() : new Date().getMonth())
     const [year, setYear] = React.useState<number>(date ? date.getFullYear() : new Date().getFullYear())
 
@@ -43,10 +44,11 @@ export function DatePickerYear({ date, setDate }: DatePickerYearProps) {
                     variant={"outline"}
                     className={cn(
                         "w-full max-w-md justify-start text-left font-normal", // größere max-w-Klasse für breitere Buttons
-                        !date && "text-muted-foreground"
+                        !date && "text-muted-foreground",
+                        error
+                            ? "border-red-500 bg-red-50 focus-visible:ring-red-500" // Fehler-Styles
+                            : "border-input focus-visible:ring-ring"
                     )}
-
-
                 >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {date ? format(date, "PPP") : <span>Datum auswählen</span>}
