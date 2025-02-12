@@ -1,29 +1,41 @@
 "use client";
-import React, {useState} from "react";
-
-import {useFieldArray, useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import * as z from "zod";
-import {Button} from "@/components/ui/button";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
-import {Input} from "@/components/ui/input";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
-import {DatePickerYear} from "@/components/date-picker-year";
-import {DatePicker} from "@/components/date-picker";
-import {CountryDropdown} from "@/components/country-dropdown-menu";
-import {Progress} from "@/components/ui/progress";
-import {useRouter} from "next/navigation";
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { DatePicker  } from "@/components/date-picker";
+import { DatePickerYear } from "@/components/date-picker-year";
+import { CountryDropdown } from "@/components/country-dropdown-menu";
+import { Progress } from "@/components/ui/progress";
 
 const genderOptions = [
-    { value: "männlich", label: "Männlich" },
-    { value: "weiblich", label: "Weiblich" },
-    { value: "divers", label: "Divers" },
+    { value: "MALE", label: "Männlich" },
+    { value: "FEMALE", label: "Weiblich" },
+    { value: "OTHER", label: "Divers" },
 ];
 
 const documentTypes = [
-    { value: "reisepass", label: "Reisepass" },
-    { value: "personalausweis", label: "Personalausweis" },
-    { value: "führerschein", label: "Führerschein" },
+    { value: "PASSPORT", label: "Reisepass" },
+    { value: "ID_CARD", label: "Personalausweis" },
+    { value: "DRIVING_LICENCE", label: "Führerschein" },
 ];
 
 function sanitizeInput(input: string): string {
@@ -31,128 +43,124 @@ function sanitizeInput(input: string): string {
 }
 
 const formSchema = z.object({
-    familienname: z.string()
-        .min(1, "Familienname ist erforderlich")
-        .max(50, "Familienname darf maximal 50 Zeichen lang sein")
-        .transform(sanitizeInput),
-    vorname: z.string()
-        .min(1, "Vorname ist erforderlich")
-        .max(50, "Vorname darf maximal 50 Zeichen lang sein")
-        .transform(sanitizeInput),
-    geschlecht: z.enum(["männlich", "weiblich", "divers"]),
-    geburtsdatum: z.date()
-        .refine(date => date <= new Date(), "Geburtsdatum darf nicht in der Zukunft liegen")
-        .refine(date => date != null, "Geburtsdatum ist erforderlich"),
-    adresse: z.object({
-        city: z.string()
-            .min(1, { message: "Die Stadt ist erforderlich." })
-            .max(100, "Stadtname darf maximal 100 Zeichen lang sein")
+    accommodationId: z.number(),
+    mainTraveler: z.object({
+        firstName: z.string()
+            .min(1, "Vorname ist erforderlich")
+            .max(50, "Vorname darf maximal 50 Zeichen lang sein")
             .transform(sanitizeInput),
-        postalCode: z.preprocess((val) => Number(val),
-            z.number().int().positive("Postleitzahl muss eine positive Zahl sein")
-                .max(99999, "Postleitzahl darf maximal 5 Ziffern haben")
-        ),
-        street: z.string()
-            .min(1, { message: "Die Straße ist erforderlich." })
-            .max(100, "Straßenname darf maximal 100 Zeichen lang sein")
+        lastName: z.string()
+            .min(1, "Familienname ist erforderlich")
+            .max(50, "Familienname darf maximal 50 Zeichen lang sein")
             .transform(sanitizeInput),
-        houseNumber: z.preprocess((val) => Number(val),
-            z.number().int().positive("Die Hausnummer muss positiv sein.")
-                .max(9999, "Hausnummer darf maximal 4 Ziffern haben")
-        ),
-        addressAdditional: z.string()
-            .optional()
-            .transform((val) => val ? sanitizeInput(val) : ""),
-        staat: z.string()
-            .min(1, { message: "Der Staat ist erforderlich." })
-            .max(100, "Staatsname darf maximal 100 Zeichen lang sein")
+        gender: z.enum(["MALE", "FEMALE", "OTHER"]),
+        birthDate: z.date()
+            .refine(date => date <= new Date(), "Geburtsdatum darf nicht in der Zukunft liegen")
+            .refine(date => date != null, "Geburtsdatum ist erforderlich"),
+        travelDocumentType: z.enum(["PASSPORT", "ID_CARD"]),
+        documentNr: z.string()
+            .min(1, "Dokumentnummer ist erforderlich")
+            .max(20, "Dokumentnummer darf maximal 20 Zeichen lang sein")
             .transform(sanitizeInput),
-    }),
-    reisedokument: z.object({
-        typ: z.enum(["reisepass", "personalausweis"]),
-        ausstellungsdatum: z.date().refine(date => date <= new Date(), "Ausstellungsdatum darf nicht in der Zukunft liegen"),
-        ausstellendeBehoerde: z.string()
+        country: z.string()
+            .min(1, "Land ist erforderlich")
+            .max(100, "Landesname darf maximal 100 Zeichen lang sein")
+            .transform(sanitizeInput),
+        issueDate: z.date()
+            .refine(date => date <= new Date(), "Ausstellungsdatum darf nicht in der Zukunft liegen"),
+        expiryDate: z.date()
+            .refine(date => date > new Date(), "Ablaufdatum muss in der Zukunft liegen"),
+        issuingAuthority: z.string()
             .min(1, "Ausstellende Behörde ist erforderlich")
             .max(100, "Behörde darf maximal 100 Zeichen lang sein")
             .transform(sanitizeInput),
-        staat: z.string()
+        issuingCountry:  z.string()
             .min(1, "Staat ist erforderlich")
             .max(100, "Staatsname darf maximal 100 Zeichen lang sein")
             .transform(sanitizeInput),
-        reisepassNummer: z.string()
-            .min(1, "Reisepassnummer ist erforderlich")
-            .max(20, "Reisepassnummer darf maximal 20 Zeichen lang sein")
+        city: z.string()
+            .min(1, "Stadt ist erforderlich")
+            .max(100, "Stadtname darf maximal 100 Zeichen lang sein")
             .transform(sanitizeInput),
+        postalCode: z.number()
+            .int()
+            .positive("Postleitzahl muss eine positive Zahl sein")
+            .max(99999, "Postleitzahl darf maximal 5 Ziffern haben"),
+        street: z.string()
+            .min(1, "Straße ist erforderlich")
+            .max(100, "Straßenname darf maximal 100 Zeichen lang sein")
+            .transform(sanitizeInput),
+        houseNumber: z.number()
+            .int()
+            .positive("Die Hausnummer muss positiv sein.")
+            .max(9999, "Hausnummer darf maximal 4 Ziffern haben"),
+        addressAdditional: z.string()
+            .optional()
+            .transform((val) => val ? sanitizeInput(val) : ""),
     }),
-    ankunftsdatum: z.date().refine(date => date > new Date(), "Ankunftsdatum muss in der Zukunft liegen"),
-    abreisedatum: z.date()
-        .refine(date => date > new Date(), "Abreisedatum muss in der Zukunft liegen"),
-    mitreisende: z.array(
+    additionalGuests: z.array(
         z.object({
-            familienname: z.string()
-                .nonempty("Familienname erforderlich")
-                .max(50, "Familienname darf maximal 50 Zeichen lang sein")
-                .transform(sanitizeInput),
-            vorname: z.string()
-                .nonempty("Vorname erforderlich")
+            firstName: z.string()
+                .min(1, "Vorname erforderlich")
                 .max(50, "Vorname darf maximal 50 Zeichen lang sein")
                 .transform(sanitizeInput),
-            geburtsdatum: z.date()
+            lastName: z.string()
+                .min(1, "Familienname erforderlich")
+                .max(50, "Familienname darf maximal 50 Zeichen lang sein")
+                .transform(sanitizeInput),
+            birthDate: z.date()
                 .refine(date => date <= new Date(), "Geburtsdatum darf nicht in der Zukunft liegen")
                 .refine(date => date != null, "Geburtsdatum erforderlich"),
         })
     ).max(5, "Es können maximal 5 Mitreisende hinzugefügt werden"),
-}).superRefine((data, ctx) => {
-    // Hier vergleichen wir das Ankunftsdatum mit dem Abreisedatum
-    if (data.abreisedatum && data.ankunftsdatum && data.abreisedatum <= data.ankunftsdatum) {
-        ctx.addIssue({
-            path: ['abreisedatum'],
-            message: "Abreisedatum muss nach dem Ankunftsdatum liegen",
-            code: z.ZodIssueCode.custom,
-        });
-    }
+    checkIn: z.date().refine(date => date > new Date(), "Ankunftsdatum muss in der Zukunft liegen"),
+    expectedCheckOut: z.date()
+        .refine(date => date > new Date(), "Abreisedatum muss in der Zukunft liegen"),
+}).refine((data) => data.expectedCheckOut > data.checkIn, {
+    message: "Abreisedatum muss nach dem Ankunftsdatum liegen",
+    path: ["expectedCheckOut"],
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 export function FormAustria() {
-
-    const router = useRouter()
+    const router = useRouter();
     const [currentPage, setCurrentPage] = useState(0);
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            mitreisende: [],
+            accommodationId: 1,
+            additionalGuests: [],
         },
     });
 
-    const {fields, append, remove} = useFieldArray({
+    const { fields, append, remove } = useFieldArray({
         control: form.control,
-        name: 'mitreisende',
+        name: 'additionalGuests',
     });
 
     const validateCurrentPage = async () => {
         const fieldNames = [
-            // Gib die Feldnamen an, die auf der aktuellen Seite geprüft werden sollen
-            currentPage === 0 && ["familienname", "vorname", "geschlecht", "geburtsdatum"],
+            currentPage === 0 && ["mainTraveler.firstName", "mainTraveler.lastName", "mainTraveler.gender", "mainTraveler.birthDate"],
             currentPage === 1 && [
-                "adresse.city",
-                "adresse.postalCode",
-                "adresse.street",
-                "adresse.houseNumber",
-                "adresse.staat",
+                "mainTraveler.city",
+                "mainTraveler.postalCode",
+                "mainTraveler.street",
+                "mainTraveler.houseNumber",
+                "mainTraveler.country",
             ],
             currentPage === 2 && [
-                "reisedokument.typ",
-                "reisedokument.ausstellungsdatum",
-                "reisedokument.ausstellendeBehoerde",
-                "reisedokument.staat",
+                "mainTraveler.travelDocumentType",
+                "mainTraveler.issueDate",
+                "mainTraveler.issuingAuthority",
+                "mainTraveler.issuingCountry",
+                "mainTraveler.documentNr",
             ],
-            currentPage === 3 && ["ankunftsdatum", "abreisedatum"],
+            currentPage === 3 && ["checkIn", "expectedCheckOut"],
             currentPage === 4 && fields.map((_, index) => [
-                `mitreisende.${index}.familienname`,
-                `mitreisende.${index}.vorname`,
-                `mitreisende.${index}.geburtsdatum`,
+                `additionalGuests.${index}.firstName`,
+                `additionalGuests.${index}.lastName`,
+                `additionalGuests.${index}.birthDate`,
             ]).flat(),
         ].filter(Boolean).flat();
 
@@ -162,16 +170,35 @@ export function FormAustria() {
         return true;
     };
 
-
     const handlePreviousPage = () => {
         setCurrentPage((prev) => prev - 1);
     };
 
-    const onSubmit = (data: FormValues) => {
-        console.log(data);
-    }
+    const handleNextPage = async () => {
+        const isValid = await validateCurrentPage();
+        if (isValid) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
 
-    const handleSubmit = () => {
+    const onSubmit = (data: FormValues) => {
+        const formattedData = {
+            accommodationId: data.accommodationId,
+            mainTraveler: {
+                ...data.mainTraveler,
+                birthDate: data.mainTraveler.birthDate.toISOString().split('T')[0],
+                issueDate: data.mainTraveler.issueDate.toISOString().split('T')[0],
+                expiryDate: data.mainTraveler.expiryDate.toISOString().split('T')[0],
+            },
+            additionalGuests: data.additionalGuests.map(guest => ({
+                ...guest,
+                birthDate: guest.birthDate.toISOString().split('T')[0],
+            })),
+            checkIn: data.checkIn.toISOString().split('T')[0],
+            expectedCheckOut: data.expectedCheckOut.toISOString().split('T')[0],
+        };
+
+        console.log(JSON.stringify(formattedData, null, 2));
         router.push("/tenantRegistration/registrationComplete");
     };
 
@@ -181,8 +208,8 @@ export function FormAustria() {
             <div className="grid grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
-                    name="vorname"
-                    render={({ field, fieldState }) => ( // fieldState enthält die Validierungsfehler
+                    name="mainTraveler.firstName"
+                    render={({ field, fieldState }) => (
                         <FormItem>
                             <FormLabel>
                                 Vorname<span className="text-red-500 ml-1">*</span>
@@ -197,7 +224,7 @@ export function FormAustria() {
 
                 <FormField
                     control={form.control}
-                    name="familienname"
+                    name="mainTraveler.lastName"
                     render={({ field, fieldState }) => (
                         <FormItem>
                             <FormLabel>Familienname<span className="text-red-500 ml-1">*</span></FormLabel>
@@ -210,7 +237,7 @@ export function FormAustria() {
                 />
                 <FormField
                     control={form.control}
-                    name="geschlecht"
+                    name="mainTraveler.gender"
                     render={({ field, fieldState }) => (
                         <FormItem>
                             <FormLabel>
@@ -237,7 +264,7 @@ export function FormAustria() {
 
                 <FormField
                     control={form.control}
-                    name="geburtsdatum"
+                    name="mainTraveler.birthDate"
                     render={({field, fieldState}) => (
                         <FormItem className="flex-1">
                             <FormLabel>Geburtsdatum<span className="text-red-500 ml-1">*</span></FormLabel>
@@ -257,12 +284,12 @@ export function FormAustria() {
             <div className="grid grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
-                    name="adresse.city"
+                    name="mainTraveler.city"
                     render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Stadt<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <Input {...field} error={!!fieldState.error}/>
+                                <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -270,19 +297,19 @@ export function FormAustria() {
                 />
                 <FormField
                     control={form.control}
-                    name="adresse.postalCode"
+                    name="mainTraveler.postalCode"
                     render={({ field, fieldState }) => (
                         <FormItem>
                             <FormLabel>Postleitzahl<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
                                 <Input
-                                    type="number"  // Beibehaltung von type="number"
+                                    type="number"
                                     {...field}
-                                    inputMode="numeric"  // Setzt den Eingabemodus auf numerisch
-                                    pattern="\d+"  // Validiert nur ganze Zahlen (keine Sonderzeichen)
+                                    inputMode="numeric"
+                                    pattern="\d+"
                                     onChange={(e) => {
-                                        const value = e.target.value.replace(/\D/g, ''); // Entfernt alle nicht-Ziffern
-                                        field.onChange(value); // Wert des Formulars wird aktualisiert
+                                        const value = e.target.value.replace(/\D/g, '');
+                                        field.onChange(Number(value));
                                     }}
                                     error={!!fieldState.error}
                                 />
@@ -294,12 +321,12 @@ export function FormAustria() {
 
                 <FormField
                     control={form.control}
-                    name="adresse.street"
+                    name="mainTraveler.street"
                     render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Straße<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <Input {...field} error={!!fieldState.error}/>
+                                <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -307,12 +334,17 @@ export function FormAustria() {
                 />
                 <FormField
                     control={form.control}
-                    name="adresse.houseNumber"
+                    name="mainTraveler.houseNumber"
                     render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Hausnummer<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <Input type="number" {...field} error={!!fieldState.error}/>
+                                <Input
+                                    type="number"
+                                    {...field}
+                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                    error={!!fieldState.error}
+                                />
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -320,7 +352,7 @@ export function FormAustria() {
                 />
                 <FormField
                     control={form.control}
-                    name="adresse.addressAdditional"
+                    name="mainTraveler.addressAdditional"
                     render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Adresszusatz</FormLabel>
@@ -333,12 +365,12 @@ export function FormAustria() {
                 />
                 <FormField
                     control={form.control}
-                    name="adresse.staat"
+                    name="mainTraveler.country"
                     render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Staatsangehörigkeit<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <CountryDropdown
+                                <CountryDropdown
                                     placeholder="Land auswählen"
                                     onChange={field.onChange}
                                     error={!!fieldState.error}
@@ -356,7 +388,7 @@ export function FormAustria() {
             <div className="grid grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
-                    name="reisedokument.typ"
+                    name="mainTraveler.travelDocumentType"
                     render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Dokumenttyp<span className="text-red-500 ml-1">*</span></FormLabel>
@@ -380,7 +412,20 @@ export function FormAustria() {
                 />
                 <FormField
                     control={form.control}
-                    name="reisedokument.ausstellungsdatum"
+                    name="mainTraveler.documentNr"
+                    render={({field, fieldState}) => (
+                        <FormItem>
+                            <FormLabel>Dokumentnummer<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormControl>
+                                <Input {...field} error={!!fieldState.error}/>
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="mainTraveler.issueDate"
                     render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Ausstellungsdatum<span className="text-red-500 ml-1">*</span></FormLabel>
@@ -395,12 +440,27 @@ export function FormAustria() {
                 />
                 <FormField
                     control={form.control}
-                    name="reisedokument.ausstellendeBehoerde"
+                    name="mainTraveler.expiryDate"
+                    render={({field, fieldState}) => (
+                        <FormItem>
+                            <FormLabel>Ablaufdatum<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <DatePickerYear
+                                date={field.value}
+                                setDate={field.onChange}
+                                error={!!fieldState.error}
+                            />
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="mainTraveler.issuingAuthority"
                     render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Ausstellende Behörde<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                            <Input {...field} error={!!fieldState.error}/>
+                                <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -408,7 +468,7 @@ export function FormAustria() {
                 />
                 <FormField
                     control={form.control}
-                    name="reisedokument.staat"
+                    name="mainTraveler.issuingCountry"
                     render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Ausstellender Staat<span className="text-red-500 ml-1">*</span></FormLabel>
@@ -422,59 +482,45 @@ export function FormAustria() {
                         </FormItem>
                     )}
                 />
+            </div>
+        </div>,
+        <div key="page4">
+            <h3 className="text-lg font-semibold">Reisedaten</h3>
+            <div className="grid grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
-                    name="reisedokument.reisepassNummer"
+                    name="checkIn"
                     render={({field, fieldState}) => (
-                        <FormItem>
-                            <FormLabel>Reisepass Nummer<span className="text-red-500 ml-1">*</span></FormLabel>
-                            <FormControl>
-                            <Input {...field} error={!!fieldState.error}/>
-                            </FormControl>
+                        <FormItem className="flex flex-col">
+                            <FormLabel>Ankunftsdatum<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <DatePicker
+                                date={field.value}
+                                setDate={field.onChange}
+                                error={!!fieldState.error}
+                            />
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="expectedCheckOut"
+                    render={({field, fieldState}) => (
+                        <FormItem className="flex flex-col">
+                            <FormLabel>Voraussichtliches Abreisedatum<span
+                                className="text-red-500 ml-1">*</span></FormLabel>
+                            <DatePicker
+                                date={field.value}
+                                setDate={field.onChange}
+                                error={!!fieldState.error}
+                            />
                             <FormMessage/>
                         </FormItem>
                     )}
                 />
             </div>
         </div>,
-        <div key="page4">
-            <h3 className="text-lg font-semibold">Reisedaten</h3>
-            <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                        control={form.control}
-                        name="ankunftsdatum"
-                        render={({field, fieldState}) => (
-                            <FormItem className="flex flex-col">
-                                <FormLabel>Ankunftsdatum<span className="text-red-500 ml-1">*</span></FormLabel>
-                                <DatePicker
-                                    date={field.value}
-                                    setDate={field.onChange}
-                                    error={!!fieldState.error}
-                                />
-                                <FormMessage/>
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="abreisedatum"
-                        render={({field, fieldState}) => (
-                            <FormItem className="flex flex-col">
-                                <FormLabel>Voraussichtliches Abreisedatum<span
-                                    className="text-red-500 ml-1">*</span></FormLabel>
-                                <DatePicker
-                                    date={field.value}
-                                    setDate={field.onChange}
-                                    error={!!fieldState.error}
-                                />
-                                <FormMessage/>
-                            </FormItem>
-                        )}
-                    />
-                </div>
-            </div>
-            ,
         <div key="page5">
             <div>
                 <h3 className="text-lg font-semibold mb-4">Mitreisende</h3>
@@ -487,7 +533,7 @@ export function FormAustria() {
 
                                 <FormField
                                     control={form.control}
-                                    name={`mitreisende.${index}.vorname`}
+                                    name={`additionalGuests.${index}.firstName`}
                                     render={({field, fieldState}) => (
                                         <FormItem>
                                             <FormLabel>Vorname<span className="text-red-500 ml-1">*</span></FormLabel>
@@ -501,7 +547,7 @@ export function FormAustria() {
 
                                 <FormField
                                     control={form.control}
-                                    name={`mitreisende.${index}.familienname`}
+                                    name={`additionalGuests.${index}.lastName`}
                                     render={({field, fieldState}) => (
                                         <FormItem>
                                             <FormLabel>Familienname<span
@@ -516,7 +562,7 @@ export function FormAustria() {
 
                                 <FormField
                                     control={form.control}
-                                    name={`mitreisende.${index}.geburtsdatum`}
+                                    name={`additionalGuests.${index}.birthDate`}
                                     render={({field, fieldState}) => (
                                         <FormItem>
                                             <FormLabel>Geburtsdatum<span
@@ -551,7 +597,7 @@ export function FormAustria() {
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => append({familienname: '', vorname: '', geburtsdatum: new Date()})}
+                            onClick={() => append({firstName: '', lastName: '', birthDate: new Date()})}
                         >
                             Mitreisenden hinzufügen
                         </Button>
@@ -559,7 +605,6 @@ export function FormAustria() {
                 )}
             </div>
         </div>
-
     ];
 
     return (
@@ -578,20 +623,12 @@ export function FormAustria() {
                             Zurück
                         </Button>
                     )}
-                    {currentPage < pages.length - 1 ? (
-                        <Button
-                            type="button"
-                            onClick={async () => {
-                                const isValid = await validateCurrentPage();
-                                if (isValid) {
-                                    setCurrentPage((prev) => prev + 1);
-                                }
-                            }}
-                        >
+                    {currentPage < pages.length  ? (
+                        <Button type="button" onClick={handleNextPage}>
                             Weiter
                         </Button>
                     ) : (
-                        <Button type="submit" onClick={handleSubmit}>
+                        <Button type="submit">
                             Abschicken
                         </Button>
                     )}
