@@ -57,7 +57,7 @@ const formSchema = z.object({
         birthDate: z.date()
             .refine(date => date <= new Date(), "Geburtsdatum darf nicht in der Zukunft liegen")
             .refine(date => date != null, "Geburtsdatum ist erforderlich"),
-        travelDocumentType: z.enum(["PASSPORT", "ID_CARD"]),
+        travelDocumentType: z.enum(["PASSPORT", "ID_CARD", "DRIVING_LICENCE"]),
         documentNr: z.string()
             .min(1, "Dokumentnummer ist erforderlich")
             .max(20, "Dokumentnummer darf maximal 20 Zeichen lang sein")
@@ -197,7 +197,6 @@ export function FormAustria() {
             checkIn: data.checkIn.toISOString().split('T')[0],
             expectedCheckOut: data.expectedCheckOut.toISOString().split('T')[0],
         };
-
         console.log(JSON.stringify(formattedData, null, 2));
         router.push("/tenantRegistration/registrationComplete");
     };
@@ -609,7 +608,7 @@ export function FormAustria() {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form className="space-y-8">
                 <Progress
                     value={(currentPage / (pages.length - 1)) * 100}
                     className="mb-4"
@@ -623,18 +622,22 @@ export function FormAustria() {
                             Zurück
                         </Button>
                     )}
-                    {currentPage < pages.length  ? (
-                        <Button type="button" onClick={handleNextPage}>
+                    {currentPage < pages.length - 1 ? (
+                        <Button
+                            type="button"
+                            onClick={handleNextPage}
+                        >
                             Weiter
                         </Button>
                     ) : (
-                        <Button type="submit">
+                        <Button type="button" onClick={() => form.handleSubmit(onSubmit)()}>
                             Abschicken
                         </Button>
                     )}
                 </div>
             </form>
         </Form>
+
     );
 
 }
