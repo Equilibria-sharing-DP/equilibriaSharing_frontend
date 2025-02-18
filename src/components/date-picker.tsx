@@ -29,7 +29,7 @@ export function DatePicker({ date, setDate, error }: DatePickerProps) {
                         "w-full max-w-md justify-start text-left font-normal", // größere max-w-Klasse für breitere Buttons
                         !date && "text-muted-foreground",
                         error
-                        ? "border-red-500 bg-red-50 focus-visible:ring-red-500" // Fehler-Styles
+                        ? "border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900 focus-visible:ring-red-500 dark:focus-visible:ring-red-400" // Fehler-Styles
                         : "border-input focus-visible:ring-ring"
                     )}
 

@@ -297,7 +297,7 @@ export function FormAustria() {
                 <FormField
                     control={form.control}
                     name="mainTraveler.postalCode"
-                    render={({ field, fieldState }) => (
+                    render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>Postleitzahl<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
@@ -313,76 +313,78 @@ export function FormAustria() {
                                     error={!!fieldState.error}
                                 />
                             </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="mainTraveler.street"
-                    render={({field, fieldState}) => (
-                        <FormItem>
-                            <FormLabel>Straße<span className="text-red-500 ml-1">*</span></FormLabel>
-                            <FormControl>
-                                <Input {...field} error={!!fieldState.error}/>
-                            </FormControl>
                             <FormMessage/>
                         </FormItem>
                     )}
                 />
-                <FormField
-                    control={form.control}
-                    name="mainTraveler.houseNumber"
-                    render={({field, fieldState}) => (
-                        <FormItem>
-                            <FormLabel>Hausnummer<span className="text-red-500 ml-1">*</span></FormLabel>
-                            <FormControl>
-                                <Input
-                                    type="number"
-                                    {...field}
-                                    onChange={(e) => field.onChange(Number(e.target.value))}
-                                    error={!!fieldState.error}
-                                />
-                            </FormControl>
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="mainTraveler.addressAdditional"
-                    render={({field, fieldState}) => (
-                        <FormItem>
-                            <FormLabel>Adresszusatz</FormLabel>
-                            <FormControl>
-                                <Input {...field} error={!!fieldState.error}/>
-                            </FormControl>
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="mainTraveler.country"
-                    render={({field, fieldState}) => (
-                        <FormItem>
-                            <FormLabel>Staatsangehörigkeit<span className="text-red-500 ml-1">*</span></FormLabel>
-                            <FormControl>
-                                <CountryDropdown
-                                    placeholder="Land auswählen"
-                                    onChange={field.onChange}
-                                    error={!!fieldState.error}
-                                    value={field.value}
-                                />
-                            </FormControl>
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
+                <div className="grid grid-cols-3 gap-4 col-span-2">
+                        <FormField
+                            control={form.control}
+                            name="mainTraveler.street"
+                            render={({field, fieldState}) => (
+                                <FormItem>
+                                    <FormLabel>Straße<span className="text-red-500 ml-1">*</span></FormLabel>
+                                    <FormControl>
+                                        <Input {...field} error={!!fieldState.error}/>
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="mainTraveler.houseNumber"
+                            render={({field, fieldState}) => (
+                                <FormItem>
+                                    <FormLabel>Hausnummer<span className="text-red-500 ml-1">*</span></FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            {...field}
+                                            onChange={(e) => field.onChange(Number(e.target.value))}
+                                            error={!!fieldState.error}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="mainTraveler.addressAdditional"
+                            render={({field, fieldState}) => (
+                                <FormItem>
+                                    <FormLabel>Adresszusatz</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} error={!!fieldState.error}/>
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <FormField
+                        control={form.control}
+                        name="mainTraveler.country"
+                        render={({field, fieldState}) => (
+                            <FormItem>
+                                <FormLabel>Staatsangehörigkeit<span className="text-red-500 ml-1">*</span></FormLabel>
+                                <FormControl>
+                                    <CountryDropdown
+                                        placeholder="Land auswählen"
+                                        onChange={field.onChange}
+                                        error={!!fieldState.error}
+                                        value={field.value}
+                                    />
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                </div>
             </div>
-        </div>,
-        <div key="page3">
+            ,
+            <div key="page3">
             <h3 className="text-lg font-semibold">Reisedokument<span className="text-red-500 ml-1">*</span></h3>
             <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -608,6 +610,7 @@ export function FormAustria() {
 
     return (
         <Form {...form}>
+
             <form className="space-y-8">
                 <Progress
                     value={(currentPage / (pages.length - 1)) * 100}
