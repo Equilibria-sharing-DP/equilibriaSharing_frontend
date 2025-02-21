@@ -19,17 +19,21 @@ export function Footer() {
                     </span>
 
                 </div>
-                <div className="flex flex-col items-center justify-center mt-12 lg:mt-0">
-                    <Button asChild variant="link">
+                <div className="flex flex-col items-center justify-center mt-12 lg:mt-0 space-y-2">
+                    <Button asChild variant="link"
+                            className="text-black dark:text-white hover:text-black ">
                         <Link href="/impressum">Impressum</Link>
                     </Button>
-                    <Button asChild variant="link">
+                    <Button asChild variant="link"
+                            className="text-black dark:text-white hover:text-black ">
                         <Link href="/kontakt">Kontakt</Link>
                     </Button>
-                    <Button asChild variant="link">
+                    <Button asChild variant="link"
+                            className="text-black dark:text-white hover:text-black ">
                         <Link href="/datenschutz">Datenschutz</Link>
                     </Button>
                 </div>
+
                 <div
                     className="flex flex-col items-center justify-center mt-12 text-center lg:items-end lg:justify-end lg:text-right lg:mt-0 mb-14">
                     <h3>Diplomarbeit - Equilibira Sharing</h3>

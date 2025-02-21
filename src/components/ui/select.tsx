@@ -14,26 +14,36 @@ const SelectValue = SelectPrimitive.Value
 
 const SelectTrigger = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Trigger>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & { error?: boolean }
->(({ className, error, children, ...props }, ref) => (
+    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
+  error?: boolean;
+  placeholder?: string; // Optionaler Prop für den Platzhalter
+  value?: string; // Wert aus dem Select
+}
+>(({ className, error, placeholder, value, children, ...props }, ref) => (
     <SelectPrimitive.Trigger
         ref={ref}
         className={cn(
-            "flex h-10 w-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+            "flex h-10 w-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
             error
-                ? "border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900 focus-visible:ring-red-500 dark:focus-visible:ring-red-400" // Fehler-Styles
+                ? "border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900 focus-visible:ring-red-500 dark:focus-visible:ring-red-400"
                 : "border-input focus-visible:ring-ring",
             className
         )}
         {...props}
     >
+      {/* Platzhalter anzeigen, wenn der Wert leer ist */}
+      {!value && placeholder && (
+          <span className="text-muted-foreground">{placeholder}</span>
+      )}
       {children}
       <SelectPrimitive.Icon asChild>
         <ChevronDown className="h-4 w-4 opacity-50" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
-))
-SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
+));
+
+SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
+
 
 const SelectScrollUpButton = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.ScrollUpButton>,
