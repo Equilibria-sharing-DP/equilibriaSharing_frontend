@@ -6,7 +6,7 @@ export function Footer() {
     return (
         <footer className="container relative p-8 mx-auto xl:px-0">
             <div
-                className="grid max-w-screen-xl grid-cols-1 gap-4 pt-10 mx-auto border-t border-gray-10 lg:grid-cols-3">
+                className="grid max-w-screen-xl grid-cols-1 gap-4 mx-auto  lg:grid-cols-3">
                 <div className="flex justify-center lg:justify-start">
 
                     <span className="flex space-x-2">
