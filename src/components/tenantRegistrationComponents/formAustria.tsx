@@ -204,25 +204,48 @@ export function FormAustria() {
         }
     };
 
-    const onSubmit = (data: FormValues) => {
+    const onSubmit = async (data: FormValues) => {
         const formattedData = {
-            accommodationId: data.accommodationId,
+            ...data,
             mainTraveler: {
                 ...data.mainTraveler,
-                birthDate: data.mainTraveler.birthDate.toISOString().split('T')[0],
-                issueDate: data.mainTraveler.issueDate.toISOString().split('T')[0],
-                expiryDate: data.mainTraveler.expiryDate.toISOString().split('T')[0],
+                birthDate: new Date(data.mainTraveler.birthDate),
+                issueDate: new Date(data.mainTraveler.issueDate),
+                expiryDate: new Date(data.mainTraveler.expiryDate),
             },
             additionalGuests: data.additionalGuests.map(guest => ({
                 ...guest,
-                birthDate: guest.birthDate.toISOString().split('T')[0],
+                birthDate: new Date(guest.birthDate),
             })),
-            checkIn: data.checkIn.toISOString().split('T')[0],
-            expectedCheckOut: data.expectedCheckOut.toISOString().split('T')[0],
+            checkIn: new Date(data.checkIn),
+            expectedCheckOut: new Date(data.expectedCheckOut),
         };
-        console.log(JSON.stringify(formattedData, null, 2));
+
+        console.log("1");
+        try {
+            const parsedData = formSchema.parse(formattedData);
+            const response = await fetch("http://localhost:8080/api/v1/bookings", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(parsedData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Fehler: ${response.status} ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log("Buchung erfolgreich erstellt:", result);
+            console.log("2");
+            return result;
+        } catch (error) {
+            console.error("Fehler beim Absenden des Formulars:", error);
+        }
+
+        console.log("3");
         router.push("/tenantRegistration/registrationComplete");
     };
+
 
     const pages = [
         <div key="page1">
