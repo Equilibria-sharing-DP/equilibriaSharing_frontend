@@ -1,0 +1,12 @@
+version: '3'
+services:
+  frontend:
+    image: bast1sa1ler/equilibria-sharing_frontend:latest  
+    ports:
+      - "3000:3000"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
