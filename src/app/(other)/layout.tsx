@@ -1,10 +1,9 @@
 import localFont from "next/font/local";
+import {Navbar} from "@/components/navbar";
 import "@/app/globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import Head from "next/head";
-import TenantDataManagementLayoutClient from "./tenantDataManagementLayoutClient"; // Die Client-Komponente
+import {Footer} from "@/components/footer";
+import {ThemeProvider} from "@/components/theme-provider";
 
-// Local Fonts
 const geistSans = localFont({
     src: "../fonts/GeistVF.woff",
     variable: "--font-geist-sans",
@@ -23,17 +22,18 @@ export const metadata = {
     },
 };
 
-export default function TenantDataManagementLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({
+                                                     children,
+                                                 }: Readonly<{
+    children: React.ReactNode;
+}>) {
     return (
         <html lang="en">
-        <Head>
-            <link rel="icon" href="/img/icon.png" type="image/x-icon" />
-            <meta name="description" content="Verwalte Mieterdaten effizient und sicher mit Equilibira Sharing." />
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-        </Head>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="white" enableSystem>
-            <TenantDataManagementLayoutClient>{children}</TenantDataManagementLayoutClient>
+            <Navbar/>
+            {children}
+            <Footer/>
         </ThemeProvider>
         </body>
         </html>
