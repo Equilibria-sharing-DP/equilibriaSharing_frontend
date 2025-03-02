@@ -11,7 +11,7 @@ export default function TenantRegistrationPage(): ReactElement {
                             Mieter Registrierung
                         </h1>
                         <p className="text-sm mb-6">
-                            <span className="text-red-600 dark:text-red-500">*</span> Pflichtfeld
+                            <span className="text-red-600">*</span> Pflichtfeld
                         </p>
                         <FormAustria />
                     </div>

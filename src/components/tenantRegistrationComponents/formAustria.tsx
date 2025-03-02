@@ -1,6 +1,6 @@
 "use client";
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, {useState} from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -185,7 +185,7 @@ const formSchema = z.object({
                 required_error: "Geburtsdatum erforderlich",
             }).refine(date => date <= new Date(), "Geburtsdatum darf nicht in der Zukunft liegen"),
         })
-    ).max(5, "Es können maximal 5 Mitreisende hinzugefügt werden"),
+    ).max(10, "Es können maximal 5 Mitreisende hinzugefügt werden"),
 
 }).refine((data) => data.expectedCheckOut > data.checkIn, {
     message: "Abreisedatum muss nach dem Ankunftsdatum liegen",
@@ -194,13 +194,45 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+// Funktion zum Dekodieren der Base64-URL-Daten
+function decodeUrlParams(encodedData: string | null): { accommodationId: number; checkIn: Date; expectedCheckOut: Date } | null {
+    if (!encodedData){
+        console.error("Fehler: Fehlende URL-Parameter");
+        return null;
+    }
+    try {
+        const decodedString = atob(encodedData); // Base64-String dekodieren
+        const parsedData = JSON.parse(decodedString);
+
+        // Prüfen, ob die notwendigen Felder existieren
+        if (!parsedData.accommodationId || !parsedData.checkIn || !parsedData.expectedCheckOut) {
+            console.error("Fehler: Fehlerhafte URL-Parameter");
+            return null;
+        }
+        return {
+            accommodationId: parsedData.accommodationId,
+            checkIn: new Date(parsedData.checkIn),
+            expectedCheckOut: new Date(parsedData.expectedCheckOut),
+        };
+    } catch (error) {
+        console.error("Fehler beim Dekodieren der URL-Parameter:", error);
+        return null;
+    }
+}
+
 export function FormAustria() {
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(0);
+    const searchParams = useSearchParams();
+    // Lese den Base64-kodierten `data`-Parameter aus der URL
+    const encodedData = searchParams.get("data");
+    const urlParams = decodeUrlParams(encodedData);
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            accommodationId: 1,
+            accommodationId: urlParams?.accommodationId ?? 1,
+            checkIn: urlParams?.checkIn ?? undefined,
+            expectedCheckOut: urlParams?.expectedCheckOut ?? undefined,
             additionalGuests: [],
         },
     });
@@ -279,11 +311,10 @@ export function FormAustria() {
             });
 
             if (!response.ok) {
-                throw new Error(`Fehler: ${response.status} ${response.statusText}`);
+                console.error(`Fehler: ${response.status} ${response.statusText}`);
             }
 
             const result = await response.json();
-            console.log("Buchung erfolgreich erstellt:", result);
             router.push("/tenantRegistration/registrationComplete");
             return result;
         } catch (error) {
@@ -580,6 +611,9 @@ export function FormAustria() {
         </div>,
         <div key="page4">
             <h3 className="text-lg font-semibold">Reisedaten</h3>
+            <p className="text-xs mb-6">
+                Bei nicht Korrekten Reisedaten bei Vermieter Melden!
+            </p>
             <div className="grid grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
@@ -591,6 +625,7 @@ export function FormAustria() {
                                 date={field.value}
                                 setDate={field.onChange}
                                 error={!!fieldState.error}
+                                disable={true}
                             />
                             <FormMessage/>
                         </FormItem>
@@ -608,6 +643,7 @@ export function FormAustria() {
                                 date={field.value}
                                 setDate={field.onChange}
                                 error={!!fieldState.error}
+                                disable={true}
                             />
                             <FormMessage/>
                         </FormItem>
