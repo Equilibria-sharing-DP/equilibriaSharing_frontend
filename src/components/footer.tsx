@@ -22,15 +22,15 @@ export function Footer() {
                 <div className="flex flex-col items-center justify-center mt-12 lg:mt-0 space-y-2">
                     <Button asChild variant="link"
                             className="text-black dark:text-white hover:text-black ">
-                        <Link href="/impressum">Impressum</Link>
+                        <Link href="https://equilibria.at/impressum/">Impressum</Link>
                     </Button>
                     <Button asChild variant="link"
                             className="text-black dark:text-white hover:text-black ">
-                        <Link href="/kontakt">Kontakt</Link>
+                        <Link href="https://equilibria.at/kontakt/">Kontakt</Link>
                     </Button>
                     <Button asChild variant="link"
                             className="text-black dark:text-white hover:text-black ">
-                        <Link href="/datenschutz">Datenschutz</Link>
+                        <Link href="/tenantRegistration/datenschutz">Datenschutz</Link>
                     </Button>
                 </div>
 

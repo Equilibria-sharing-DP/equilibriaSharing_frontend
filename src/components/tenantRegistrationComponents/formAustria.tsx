@@ -769,7 +769,7 @@ export function FormAustria() {
 
                 <div className={`flex mt-4 ${currentPage === 0 ? "justify-end" : "justify-between"}`}>
                     {currentPage > 0 && (
-                        <Button type="button" onClick={handlePreviousPage}>
+                        <Button type="button" variant="secondary" onClick={handlePreviousPage}>
                             Zurück
                         </Button>
                     )}
