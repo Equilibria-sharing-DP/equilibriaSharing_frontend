@@ -39,112 +39,160 @@ const documentTypes = [
     { value: "DRIVING_LICENCE", label: "Führerschein" },
 ];
 
-function sanitizeInput(input: string): string {
-    return input.replace(/<\/?[^>]+(>|$)/g, "").trim();
-}
+const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/; // Erlaubt Buchstaben, Umlaute, Leerzeichen, Bindestrich, Apostroph
+const alphanumericRegex = /^[A-Za-z0-9]+$/; // Nur Buchstaben & Zahlen für Dokumentnummern
+const isAdult = (date: Date) => {
+    const today = new Date();
+    const minBirthDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+    return date <= minBirthDate;
+};
 
 const formSchema = z.object({
     accommodationId: z.number(),
 
     mainTraveler: z.object({
-        firstName: z.string()
-            .min(1, "Vorname ist erforderlich")
+        firstName: z.string({
+                required_error: "Vorname ist erforderlich",
+            }).max(50, "Vorname darf maximal 50 Zeichen lang sein")
             .max(50, "Vorname darf maximal 50 Zeichen lang sein")
-            .transform(sanitizeInput),
+            .refine((value) => nameRegex.test(value), {
+                message: "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt.",
+            }),
 
-        lastName: z.string()
-            .min(1, "Familienname ist erforderlich")
-            .max(50, "Familienname darf maximal 50 Zeichen lang sein")
-            .transform(sanitizeInput),
+        lastName: z.string({
+                required_error: "Familienname ist erforderlich",
+            }).max(50, "Familienname darf maximal 50 Zeichen lang sein")
+            .refine((value) => nameRegex.test(value), {
+                message: "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt.",
+            }),
 
-        gender: z.enum(["MALE", "FEMALE", "OTHER"]),
+        gender: z.enum(["MALE", "FEMALE", "OTHER"], {
+            required_error: "Geschlecht ist erforderlich",
+        }),
 
-        birthDate: z.date()
-            .refine(date => date <= new Date(), "Geburtsdatum darf nicht in der Zukunft liegen"),
+        birthDate: z.date({
+                required_error: "Geburtsdatum ist erforderlich",
+            })
+            .refine(date => date <= new Date(), "Geburtsdatum darf nicht in der Zukunft liegen")
+            .refine(isAdult, "Der Hauptmieter muss mindestens 18 Jahre alt sein"),
 
-        travelDocumentType: z.enum(["PASSPORT", "ID_CARD", "DRIVING_LICENCE"]),
+        city: z.string({
+                required_error: "Stadt ist erforderlich",
+            }).max(100, "Stadtname darf maximal 100 Zeichen lang sein")
+            .refine((value) => nameRegex.test(value), {
+                message: "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt.",
+            }),
 
-        documentNr: z.string()
-            .min(1, "Dokumentnummer ist erforderlich")
-            .max(20, "Dokumentnummer darf maximal 20 Zeichen lang sein")
-            .transform(sanitizeInput),
+        postalCode: z.preprocess(
+            (val) => Number(val), // Wandelt Eingaben in Zahlen um
+            z.number({
+                required_error: "Postleitzahl ist erforderlich",
+            })
+                .int("Postleitzahl muss eine ganze Zahl sein")
+                .positive("Postleitzahl muss positiv sein")
+                .max(9999999, "Postleitzahl darf maximal 7 Ziffern haben")
+        ),
 
-        country: z.string()
-            .min(1, "Land ist erforderlich")
-            .max(100, "Landesname darf maximal 100 Zeichen lang sein")
-            .transform(sanitizeInput),
+        street: z.string({
+                required_error: "Straße ist erforderlich",
+            }).max(100, "Straßenname darf maximal 100 Zeichen lang sein")
+            .refine((value) => nameRegex.test(value), {
+                message: "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt.",
+            }),
 
-        issueDate: z.date()
-            .refine(date => date <= new Date(), "Ausstellungsdatum darf nicht in der Zukunft liegen"),
+        houseNumber: z.preprocess(
+            (val) => Number(val), // Wandelt Eingaben in Zahlen um
+            z.number({
+                    required_error: "Hausnummer ist erforderlich",
+                })
+                .int("Hausnummer muss eine ganze Zahl sein")
+                .positive("Die Hausnummer muss positiv sein")
+                .max(99999, "Hausnummer darf maximal 5 Ziffern haben")
+        ),
 
-        expiryDate: z.date()
-            .refine(date => date > new Date(), "Ablaufdatum muss in der Zukunft liegen"),
-
-        issuingAuthority: z.string()
-            .min(1, "Ausstellende Behörde ist erforderlich")
-            .max(100, "Behörde darf maximal 100 Zeichen lang sein")
-            .transform(sanitizeInput),
-
-        issuingCountry: z.string()
-            .min(1, "Staat ist erforderlich")
-            .max(100, "Staatsname darf maximal 100 Zeichen lang sein")
-            .transform(sanitizeInput),
-
-        city: z.string()
-            .min(1, "Stadt ist erforderlich")
-            .max(100, "Stadtname darf maximal 100 Zeichen lang sein")
-            .transform(sanitizeInput),
-
-        postalCode: z.number()
-            .int()
-            .positive("Postleitzahl muss eine positive Zahl sein")
-            .max(99999, "Postleitzahl darf maximal 5 Ziffern haben"),
-
-        street: z.string()
-            .min(1, "Straße ist erforderlich")
-            .max(100, "Straßenname darf maximal 100 Zeichen lang sein")
-            .transform(sanitizeInput),
-
-        houseNumber: z.number()
-            .int()
-            .positive("Die Hausnummer muss positiv sein.")
-            .max(9999, "Hausnummer darf maximal 4 Ziffern haben"),
+        country: z.string({
+                required_error: "Land ist erforderlich",
+            }).max(100, "Landesname darf maximal 100 Zeichen lang sein")
+            .refine((value) => nameRegex.test(value), {
+                message: "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt.",
+            }),
 
         addressAdditional: z.string()
-            .optional()
-            .transform((val) => val ? sanitizeInput(val) : ""),
+            .max(100, "Zusätzliche Adressinfos dürfen maximal 100 Zeichen lang sein")
+            .refine((value) => nameRegex.test(value), {
+                message: "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt.",
+            })
+            .optional(),
+
+        travelDocumentType: z.enum(["PASSPORT", "ID_CARD", "DRIVING_LICENCE"], {
+            required_error: "Reisedokumenttyp ist erforderlich",
+        }),
+
+        issueDate: z.date({
+            required_error: "Ausstellungsdatum ist erforderlich",
+        }).refine(date => date <= new Date(), "Ausstellungsdatum darf nicht in der Zukunft liegen"),
+
+        expiryDate: z.date({
+            required_error: "Ablaufdatum ist erforderlich",
+        }).refine(date => date > new Date(), "Ablaufdatum muss in der Zukunft liegen"),
+
+        issuingAuthority: z.string({
+            required_error: "Ausstellende Behörde ist erforderlich",
+        }).max(100, "Behörde darf maximal 100 Zeichen lang sein")
+            .refine((value) => nameRegex.test(value), {
+                message: "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt.",
+            }),
+
+        issuingCountry: z.string({
+            required_error: "Staat ist erforderlich",
+        }).max(100, "Staatsname darf maximal 100 Zeichen lang sein"),
+
+        documentNr: z.string({
+                required_error: "Dokumentnummer ist erforderlich",
+            }).max(20, "Dokumentnummer darf maximal 20 Zeichen lang sein")
+            .regex(alphanumericRegex, "Nur Buchstaben und Zahlen erlaubt"),
     }),
+
+    checkIn: z.date({
+        required_error: "Ankunftsdatum ist erforderlich",
+    }).refine(date => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Setze die Uhrzeit auf Mitternacht, damit nur das Datum verglichen wird
+        return date >= today; // Stellt sicher, dass das Datum heute oder in der Zukunft liegt
+    }, "Ankunftsdatum muss heute oder in der Zukunft liegen"),
+
+    expectedCheckOut: z.date({
+        required_error: "Abreisedatum ist erforderlich",
+    }).refine(date => date > new Date(), "Abreisedatum muss in der Zukunft liegen"),
 
     additionalGuests: z.array(
         z.object({
-            firstName: z.string()
-                .min(1, "Vorname erforderlich")
-                .max(50, "Vorname darf maximal 50 Zeichen lang sein")
-                .transform(sanitizeInput),
+            firstName: z.string({
+                    required_error: "Vorname erforderlich",
+                }).max(50, "Vorname darf maximal 50 Zeichen lang sein")
+                .refine((value) => nameRegex.test(value), {
+                    message: "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt.",
+                }),
 
-            lastName: z.string()
-                .min(1, "Familienname erforderlich")
-                .max(50, "Familienname darf maximal 50 Zeichen lang sein")
-                .transform(sanitizeInput),
+            lastName: z.string({
+                    required_error: "Familienname erforderlich",
+                }).max(50, "Familienname darf maximal 50 Zeichen lang sein")
+                .refine((value) => nameRegex.test(value), {
+                    message: "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt.",
+                }),
 
-            birthDate: z.date()
-                .refine(date => date <= new Date(), "Geburtsdatum darf nicht in der Zukunft liegen"),
+            birthDate: z.date({
+                required_error: "Geburtsdatum erforderlich",
+            }).refine(date => date <= new Date(), "Geburtsdatum darf nicht in der Zukunft liegen"),
         })
-    )
-        .max(5, "Es können maximal 5 Mitreisende hinzugefügt werden"),// **Hier erlaubt es, keine Mitreisenden anzugeben**
+    ).max(5, "Es können maximal 5 Mitreisende hinzugefügt werden"),
 
-    checkIn: z.date()
-        .refine(date => date > new Date(), "Ankunftsdatum muss in der Zukunft liegen"),
-
-    expectedCheckOut: z.date()
-        .refine(date => date > new Date(), "Abreisedatum muss in der Zukunft liegen"),
 }).refine((data) => data.expectedCheckOut > data.checkIn, {
     message: "Abreisedatum muss nach dem Ankunftsdatum liegen",
     path: ["expectedCheckOut"],
 });
 
 type FormValues = z.infer<typeof formSchema>;
-
 
 export function FormAustria() {
     const router = useRouter();
@@ -175,6 +223,7 @@ export function FormAustria() {
             currentPage === 2 && [
                 "mainTraveler.travelDocumentType",
                 "mainTraveler.issueDate",
+                "mainTraveler.expiryDate",
                 "mainTraveler.issuingAuthority",
                 "mainTraveler.issuingCountry",
                 "mainTraveler.documentNr",
@@ -221,7 +270,6 @@ export function FormAustria() {
             expectedCheckOut: new Date(data.expectedCheckOut),
         };
 
-        console.log("1");
         try {
             const parsedData = formSchema.parse(formattedData);
             const response = await fetch("http://localhost:8080/api/v1/bookings", {
@@ -236,14 +284,11 @@ export function FormAustria() {
 
             const result = await response.json();
             console.log("Buchung erfolgreich erstellt:", result);
-            console.log("2");
+            router.push("/tenantRegistration/registrationComplete");
             return result;
         } catch (error) {
             console.error("Fehler beim Absenden des Formulars:", error);
         }
-
-        console.log("3");
-        router.push("/tenantRegistration/registrationComplete");
     };
 
 
