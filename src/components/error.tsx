@@ -1,18 +1,48 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
-interface ErrorProps {
-    title: string;
-    message: string;
-    code: number;
-}
+// Fehlermeldungen basierend auf dem Fehlercode
+const errorMessages: Record<number, { title: string; message: string }> = {
+    400: {
+        title: 'Ungültige Anfrage',
+        message: 'Die angeforderte Seite kann nicht verarbeitet werden, da erforderliche Daten fehlen.',
+    },
+    401: {
+        title: 'Nicht autorisiert',
+        message: 'Sie haben keine Berechtigung, diese Seite zu sehen.',
+    },
+    403: {
+        title: 'Zugriff verweigert',
+        message: 'Sie haben keinen Zugriff auf diese Ressource.',
+    },
+    404: {
+        title: 'Seite nicht gefunden',
+        message: 'Die gesuchte Seite existiert nicht oder wurde verschoben.',
+    },
+    500: {
+        title: 'Serverfehler',
+        message: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.',
+    },
+};
 
-export function ErrorPage({ title, message, code }: ErrorProps) {
+// Standardwerte für unbekannte Fehlercodes
+const defaultError = {
+    title: 'Unbekannter Fehler',
+    message: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.',
+};
+
+export function ErrorPage() {
+    const searchParams = useSearchParams();
     const router = useRouter();
+
+    // Fehlercode aus der URL holen und sicherstellen, dass es eine Zahl ist
+    const code = parseInt(searchParams.get('code') || '500', 10);
+    const { title, message } = errorMessages[code] || defaultError;
 
     const handleGoBack = () => {
         router.back();

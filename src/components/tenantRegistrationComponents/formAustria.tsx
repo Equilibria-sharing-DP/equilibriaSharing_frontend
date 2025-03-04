@@ -194,32 +194,6 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Funktion zum Dekodieren der Base64-URL-Daten
-function decodeUrlParams(encodedData: string | null): { accommodationId: number; checkIn: Date; expectedCheckOut: Date } | null {
-    if (!encodedData){
-        console.error("Fehler: Fehlende URL-Parameter");
-        return null;
-    }
-    try {
-        const decodedString = atob(encodedData); // Base64-String dekodieren
-        const parsedData = JSON.parse(decodedString);
-
-        // Prüfen, ob die notwendigen Felder existieren
-        if (!parsedData.accommodationId || !parsedData.checkIn || !parsedData.expectedCheckOut) {
-            console.error("Fehler: Fehlerhafte URL-Parameter");
-            return null;
-        }
-        return {
-            accommodationId: parsedData.accommodationId,
-            checkIn: new Date(parsedData.checkIn),
-            expectedCheckOut: new Date(parsedData.expectedCheckOut),
-        };
-    } catch (error) {
-        console.error("Fehler beim Dekodieren der URL-Parameter:", error);
-        return null;
-    }
-}
-
 export function FormAustria() {
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(0);
@@ -241,6 +215,35 @@ export function FormAustria() {
         control: form.control,
         name: 'additionalGuests',
     });
+
+    // Funktion zum Dekodieren der Base64-URL-Daten
+    function decodeUrlParams(encodedData: string | null): { accommodationId: number; checkIn: Date; expectedCheckOut: Date } | null {
+        if (!encodedData){
+            console.error("Fehler: Fehlende URL-Parameter");
+            router.push("/error?code=400")
+            return null;
+        }
+        try {
+            const decodedString = atob(encodedData); // Base64-String dekodieren
+            const parsedData = JSON.parse(decodedString);
+
+            // Prüfen, ob die notwendigen Felder existieren
+            if (!parsedData.accommodationId || !parsedData.checkIn || !parsedData.expectedCheckOut) {
+                console.error("Fehler: Fehlerhafte URL-Parameter");
+                router.push("/error?code=400")
+                return null;
+            }
+            return {
+                accommodationId: parsedData.accommodationId,
+                checkIn: new Date(parsedData.checkIn),
+                expectedCheckOut: new Date(parsedData.expectedCheckOut),
+            };
+        } catch (error) {
+            console.error("Fehler beim Dekodieren der URL-Parameter:", error);
+            router.push("/error?code=400")
+            return null;
+        }
+    }
 
     const validateCurrentPage = async () => {
         const fieldNames = [
@@ -318,6 +321,7 @@ export function FormAustria() {
             router.push("/tenantRegistration/registrationComplete");
             return result;
         } catch (error) {
+            router.push("/error?code=500")
             console.error("Fehler beim Absenden des Formulars:", error);
         }
     };
