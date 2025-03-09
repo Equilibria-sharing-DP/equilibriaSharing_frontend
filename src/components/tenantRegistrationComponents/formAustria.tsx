@@ -198,13 +198,18 @@ export function FormAustria() {
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(0);
     const searchParams = useSearchParams();
+
     // Lese den Base64-kodierten `data`-Parameter aus der URL
     const encodedData = searchParams.get("data");
     const urlParams = decodeUrlParams(encodedData);
+
+    // Load cached form data from local storage
+    const cachedData = loadFormData();
+
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            accommodationId: urlParams?.accommodationId ?? 1,
+        defaultValues: cachedData || {
+            accommodationId: urlParams?.accommodationId ?? undefined,
             checkIn: urlParams?.checkIn ?? undefined,
             expectedCheckOut: urlParams?.expectedCheckOut ?? undefined,
             additionalGuests: [],
@@ -242,6 +247,26 @@ export function FormAustria() {
             console.error("Fehler beim Dekodieren der URL-Parameter:", error);
             router.push("/error?code=400")
             return null;
+        }
+    }
+
+    // Load form data from local storage
+    function loadFormData(): FormValues | null {
+        try {
+            const data = localStorage.getItem('formAustriaData');
+            return data ? JSON.parse(data) : null;
+        } catch (error) {
+            console.error("Fehler beim Laden der Formulardaten aus dem Cache:", error);
+            return null;
+        }
+    }
+
+    // Save form data to local storage
+    function saveFormData(data: FormValues) {
+        try {
+            localStorage.setItem('formAustriaData', JSON.stringify(data));
+        } catch (error) {
+            console.error("Fehler beim Speichern der Formulardaten im Cache:", error);
         }
     }
 
@@ -285,6 +310,7 @@ export function FormAustria() {
         const isValid = await validateCurrentPage();
         if (isValid) {
             setCurrentPage((prev) => prev + 1);
+            saveFormData(form.getValues());
         }
     };
 
