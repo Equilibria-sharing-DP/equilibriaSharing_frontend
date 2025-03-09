@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useRouter, useSearchParams} from 'next/navigation';
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +21,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { DatePicker  } from "@/components/date-picker";
 import { DatePickerYear } from "@/components/date-picker-year";
 import { CountryDropdown } from "@/components/country-dropdown-menu";
 import { Progress } from "@/components/ui/progress";
@@ -194,9 +193,27 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+type AccommodationDetails = {
+    name: string;
+    type: string;
+    description: string;
+    address: {
+        city: string;
+        country: string;
+        postalCode: number;
+        street: string;
+        houseNumber: number;
+        addressAdditional?: string;
+    };
+    maxGuests: number;
+    pricePerNight: number;
+    pictureUrls: string[];
+};
+
 export function FormAustria() {
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(0);
+    const [accommodationDetails, setAccommodationDetails] = useState<AccommodationDetails | null>(null);
     const searchParams = useSearchParams();
     // Lese den Base64-kodierten `data`-Parameter aus der URL
     const encodedData = searchParams.get("data");
@@ -245,6 +262,24 @@ export function FormAustria() {
         }
     }
 
+    useEffect(() => {
+        const fetchAccommodationDetails = async () => {
+            if (!urlParams) return;
+            try {
+                const response = await fetch(`http://localhost:8080/api/v1/accommodations/${urlParams.accommodationId}`);
+                if (!response.ok) {
+                    router.push("/error?code=400")
+                }
+                const data: AccommodationDetails = await response.json();
+                setAccommodationDetails(data);
+            } catch (error) {
+                console.error("Error fetching accommodation details:", error);
+            }
+        };
+
+        fetchAccommodationDetails();
+    }, [urlParams?.accommodationId]);
+
     const validateCurrentPage = async () => {
         const fieldNames = [
             currentPage === 0 && ["mainTraveler.firstName", "mainTraveler.lastName", "mainTraveler.gender", "mainTraveler.birthDate"],
@@ -263,8 +298,7 @@ export function FormAustria() {
                 "mainTraveler.issuingCountry",
                 "mainTraveler.documentNr",
             ],
-            currentPage === 3 && ["checkIn", "expectedCheckOut"],
-            currentPage === 4 && fields.map((_, index) => [
+            currentPage === 3 && fields.map((_, index) => [
                 `additionalGuests.${index}.firstName`,
                 `additionalGuests.${index}.lastName`,
                 `additionalGuests.${index}.birthDate`,
@@ -329,6 +363,33 @@ export function FormAustria() {
 
     const pages = [
         <div key="page1">
+            {accommodationDetails && (
+                <div className="mb-4 p-4 border rounded-lg shadow-sm">
+                    <h3 className="text-lg font-semibold">Buchungsinformationen</h3>
+                    <p className="text-xs mb-6">
+                        Bei nicht Korrekten Reisedaten bei Vermieter Melden!
+                    </p>
+                    <div className="grid grid-cols-3 gap-4 mt-4">
+                        {accommodationDetails.pictureUrls.length > 0 ? (
+                            accommodationDetails.pictureUrls.map((url, index) => (
+                                <img key={index} src={url} alt={`Bild ${index + 1}`}
+                                     className="w-full h-auto rounded-lg"/>
+                            ))
+                        ) : (
+                            <p>Keine Bilder verfügbar</p>
+                        )}
+                    </div>
+                    <p><strong>Name:</strong> {accommodationDetails.name}</p>
+                    <p><strong>Beschreibung:</strong> {accommodationDetails.description}</p>
+                    <p>
+                        <strong>Adresse:</strong> {`${accommodationDetails.address.street} ${accommodationDetails.address.houseNumber}, ${accommodationDetails.address.postalCode} ${accommodationDetails.address.city}, ${accommodationDetails.address.country}`}
+                    </p>
+
+                    <p className="mt-4"><strong>Ankunftsdatum:</strong> {urlParams?.checkIn.toLocaleDateString()}</p>
+                    <p><strong>Abreisedatum:</strong> {urlParams?.expectedCheckOut.toLocaleDateString()}</p>
+                </div>
+            )}
+
             <h3 className="text-lg font-semibold">Persönliche Daten</h3>
             <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -614,48 +675,6 @@ export function FormAustria() {
             </div>
         </div>,
         <div key="page4">
-            <h3 className="text-lg font-semibold">Reisedaten</h3>
-            <p className="text-xs mb-6">
-                Bei nicht Korrekten Reisedaten bei Vermieter Melden!
-            </p>
-            <div className="grid grid-cols-2 gap-4">
-                <FormField
-                    control={form.control}
-                    name="checkIn"
-                    render={({field, fieldState}) => (
-                        <FormItem className="flex flex-col">
-                            <FormLabel>Ankunftsdatum<span className="text-red-500 ml-1">*</span></FormLabel>
-                            <DatePicker
-                                date={field.value}
-                                setDate={field.onChange}
-                                error={!!fieldState.error}
-                                disable={true}
-                            />
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="expectedCheckOut"
-                    render={({field, fieldState}) => (
-                        <FormItem className="flex flex-col">
-                            <FormLabel>Voraussichtliches Abreisedatum<span
-                                className="text-red-500 ml-1">*</span></FormLabel>
-                            <DatePicker
-                                date={field.value}
-                                setDate={field.onChange}
-                                error={!!fieldState.error}
-                                disable={true}
-                            />
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
-            </div>
-        </div>,
-        <div key="page5">
             <div>
                 <h3 className="text-lg font-semibold mb-4">Mitreisende</h3>
                 <div className="space-y-6">
