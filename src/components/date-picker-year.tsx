@@ -18,8 +18,8 @@ interface DatePickerYearProps {
 }
 
 export function DatePickerYear({ date, setDate, error }: DatePickerYearProps) {
-    const [month, setMonth] = React.useState<number>(date ? date.getMonth() : new Date().getMonth())
-    const [year, setYear] = React.useState<number>(date ? date.getFullYear() : new Date().getFullYear())
+    const [month, setMonth] = React.useState<number>(date instanceof Date ? date.getMonth() : new Date().getMonth())
+    const [year, setYear] = React.useState<number>(date instanceof Date ? date.getFullYear() : new Date().getFullYear())
 
     const handleYearChange = (value: string) => {
         const newYear = parseInt(value, 10)
