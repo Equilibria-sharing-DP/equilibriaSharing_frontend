@@ -1,10 +1,13 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { bookings, type Booking } from "@/app/tenantDataManagement/data/bookings"
 import Image from "next/image"
 import { Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function EditBookingPage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -13,7 +16,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
   useEffect(() => {
     const bookingIndex = Number.parseInt(params.id)
     if (isNaN(bookingIndex) || bookingIndex < 0 || bookingIndex >= bookings.length) {
-      router.push("/tenantDataManagement/properties/1")
+      router.push("/tenantDataManagement/properties/[id]")
     } else {
       setBooking(bookings[bookingIndex])
     }
@@ -23,13 +26,18 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
     e.preventDefault()
     // Here you would typically update the booking in your data store
     console.log("Updated booking:", booking)
-    router.push("/tenantDataManagement/properties/1")
+    router.push("/tenantDataManagement/properties/[id]")
+  }
+
+  const handleCancel = () => {
+    router.back()
   }
 
   if (!booking) return <div>Loading...</div>
 
   return (
     <div>
+      
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         {/* Property Header */}
         <div className="mb-8">
@@ -140,7 +148,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">ausstellende Behörde</label>
                 <input
                   type="text"
-                  defaultValue="BH Mistelbach"
+                  defaultValue="MBA 6/7"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
@@ -158,7 +166,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">Ausstellungsdatum</label>
                 <input
                   type="text"
-                  defaultValue="13.01.2019"
+                  defaultValue="06.02.2017"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
@@ -167,7 +175,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">Gültig bis</label>
                 <input
                   type="text"
-                  defaultValue="14.01.2029"
+                  defaultValue="06.02.2027"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
@@ -183,7 +191,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">Strasse</label>
                 <input
                   type="text"
-                  defaultValue="Hauptstraße 30/1"
+                  defaultValue="Gutensteinerstraße 3"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
@@ -192,7 +200,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">Postleitzahl</label>
                 <input
                   type="text"
-                  defaultValue="2201"
+                  defaultValue="2751"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
@@ -201,7 +209,7 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
                 <label className="block text-xl mb-2">Ort</label>
                 <input
                   type="text"
-                  defaultValue="Kapellerfeld"
+                  defaultValue="Wiener Neustadt"
                   className="w-full p-3 border-2 border-[#A8C947] rounded-lg"
                   readOnly
                 />
@@ -270,14 +278,21 @@ export default function EditBookingPage({ params }: { params: { id: string } }) 
             </div>
           </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-end">
-            <button
+          {/* Submit and Cancel Buttons */}
+          <div className="flex justify-between mt-8">
+            <Button
+              type="button"
+              onClick={handleCancel}
+              className="bg-red-500 text-white px-6 py-2 rounded-lg text-base hover:bg-red-600 transition-colors"
+            >
+              Abbrechen
+            </Button>
+            <Button
               type="submit"
-              className="bg-[#A8C947] text-white px-8 py-3 rounded-lg text-xl hover:bg-[#97B83B] transition-colors"
+              className="bg-[#A8C947] text-white px-6 py-2 rounded-lg text-base hover:bg-[#97B83B] transition-colors"
             >
               SPEICHERN
-            </button>
+            </Button>
           </div>
         </form>
       </div>

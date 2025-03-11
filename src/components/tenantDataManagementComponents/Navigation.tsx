@@ -10,7 +10,7 @@ export function Navigation() {
   const handleLogout = () => {
     // Hier würden Sie die Logout-Logik implementieren
     // z.B. Token löschen, Session beenden, etc.
-    router.push("/login")
+    router.push("/tenantDataManagement/login")
   }
 
   return (

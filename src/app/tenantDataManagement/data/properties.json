@@ -1,91 +1,90 @@
 [
-    {
-      "id": 4,
-      "name": "Apartment in Wien",
-      "type": "Gastgeber ist Christian",
-      "description": "Modernes und luxuriöses Apartment in den österreichischen Alpen",
-      "address": {
-        "street": "Mariahilfer Straße",
-        "houseNumber": 15,
-        "addressAdditional": "Top 4",
-        "city": "Wien",
-        "postalCode": "1060",
-        "country": "Österreich"
-      },
-      "maxGuests": 4,
-      "pricePerNight": 160.0,
-      "images": [
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer6-VMYPnDyh1wq8vfW3Sw4Qy3qC3dBreW.png",
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer2-NG0MWOF7Oqhs8oVv4gPhWsiEeVfS6F.png",
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer3-PQD1N5eCluWAOL0cpzOBcqNSe4V2xi.png",
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer1-VQYhSXDnDYEgcbBGLkROa8j8jhUDYg.png",
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer5-ScbPRfC9sAkSS6XNOl0vgMtbREUu1g.png",
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer4-3QKDBx8wkvw0gEgCyIdkAmBuoV3ZsB.png"
-      ]
+  {
+    "id": 4,
+    "name": "Luxuriöses Apartment mit Bergblick",
+    "type": "Gastgeber ist Christian",
+    "description": "Modernes und luxuriöses Apartment in den österreichischen Alpen",
+    "address": {
+      "street": "Mariahilfer Straße",
+      "houseNumber": 15,
+      "addressAdditional": "Top 4",
+      "city": "Wien",
+      "postalCode": "1060",
+      "country": "Österreich"
     },
-    {
-      "id": 1,
-      "name": "Villa Bella",
-      "type": "Gewerblicher Vermieter",
-      "description": "Luxurious hotel with panoramic sea views",
-      "address": {
-        "street": "Via Roma",
-        "houseNumber": 123,
-        "addressAdditional": "",
-        "city": "Rom",
-        "postalCode": "00100",
-        "country": "Italien"
-      },
-      "maxGuests": 100,
-      "pricePerNight": 713.0,
-      "images": [
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/VillaRom1-ezjfDHqxPqc8gqo5XpFaceXuQ9aB1E.jpeg",
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/VillaRom2.jpg-vwWVJFFumiVzvIcy9KrkCmLIjzyihM.jpeg",
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/VillaRom3.jpg-pjnOhKbX6GQn7oTNiMIrI8xfCJBoIA.jpeg"
-      ]
+    "maxGuests": 4,
+    "pricePerNight": 250.0,
+    "images": [
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer6-VMYPnDyh1wq8vfW3Sw4Qy3qC3dBreW.png",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer2-NG0MWOF7Oqhs8oVv4gPhWsiEeVfS6F.png",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer3-PQD1N5eCluWAOL0cpzOBcqNSe4V2xi.png",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer1-VQYhSXDnDYEgcbBGLkROa8j8jhUDYg.png",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer5-ScbPRfC9sAkSS6XNOl0vgMtbREUu1g.png",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Mariahilfer4-3QKDBx8wkvw0gEgCyIdkAmBuoV3ZsB.png"
+    ]
+  },
+  {
+    "id": 1,
+    "name": "Villa Bella",
+    "type": "Gewerblicher Vermieter",
+    "description": "Luxurious hotel with panoramic sea views",
+    "address": {
+      "street": "Via Roma",
+      "houseNumber": 123,
+      "addressAdditional": "",
+      "city": "Rom",
+      "postalCode": "00100",
+      "country": "Italien"
     },
-    {
-      "id": 2,
-      "name": "Alpine Lodge",
-      "type": "Gastgeberin ist Patricia",
-      "description": "Cozy cabin in the mountains with ski-in ski-out access",
-      "address": {
-        "street": "Alpenstrasse",
-        "houseNumber": 278,
-        "addressAdditional": "Top 3",
-        "city": "Ustrine",
-        "postalCode": "6020",
-        "country": "Kroatien"
-      },
-      "maxGuests": 5,
-      "pricePerNight": 230.0,
-      "images": [
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AlpineLodge1-rTbMAiZs0fbpZHLBpo2uSESBmYaNX7.jpeg",
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AlpineLodge2-EnehslsaMQT3sQX2gPlD9loKB02bii.jpeg",
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AlpineLodge3-mS2lxPgcwzgDrVhEm4SylNZjMMydDc.jpeg"
-      ]
+    "maxGuests": 100,
+    "pricePerNight": 1117.0,
+    "images": [
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/VillaRom1-ezjfDHqxPqc8gqo5XpFaceXuQ9aB1E.jpeg",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/VillaRom2.jpg-vwWVJFFumiVzvIcy9KrkCmLIjzyihM.jpeg",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/VillaRom3.jpg-pjnOhKbX6GQn7oTNiMIrI8xfCJBoIA.jpeg"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Alpine Lodge",
+    "type": "Gastgeberin ist Patricia",
+    "description": "Cozy cabin in the mountains with ski-in ski-out access",
+    "address": {
+      "street": "Alpenstrasse",
+      "houseNumber": 278,
+      "addressAdditional": "Top 3",
+      "city": "Ustrine",
+      "postalCode": "6020",
+      "country": "Kroatien"
     },
-    {
-      "id": 3,
-      "name": "Urban Retreat",
-      "type": "Gastgeber ist Igor",
-      "description": "Modern apartment in the heart of the city",
-      "address": {
-        "street": "Hauptstrasse",
-        "houseNumber": 789,
-        "addressAdditional": "",
-        "city": "Bošana",
-        "postalCode": "1010",
-        "country": "Kroatien"
-      },
-      "maxGuests": 4,
-      "pricePerNight": 185.0,
-      "images": [
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/UrbanRetreat1.jpg-D3DNINaON9pGowHhA8RjCEaVrSHNtX.jpeg",
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/UrbanRetreat2.jpg-kYx1AnjM4k1DoFK8T7A4qmgBhZnd8w.jpeg",
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/UrbanRetreat3.jpg-FLiKcQ8POn1Cr64meQYM4DPDwsndiR.jpeg"
-      ]
-    }
-  ]
-  
-  
+    "maxGuests": 5,
+    "pricePerNight": 194.0,
+    "images": [
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AlpineLodge1-rTbMAiZs0fbpZHLBpo2uSESBmYaNX7.jpeg",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AlpineLodge2-EnehslsaMQT3sQX2gPlD9loKB02bii.jpeg",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AlpineLodge3-mS2lxPgcwzgDrVhEm4SylNZjMMydDc.jpeg"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Urban Retreat",
+    "type": "Gastgeber ist Igor",
+    "description": "Modern apartment in the heart of the city",
+    "address": {
+      "street": "Hauptstrasse",
+      "houseNumber": 789,
+      "addressAdditional": "",
+      "city": "Bošana",
+      "postalCode": "1010",
+      "country": "Kroatien"
+    },
+    "maxGuests": 4,
+    "pricePerNight": 585.0,
+    "images": [
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/UrbanRetreat1.jpg-D3DNINaON9pGowHhA8RjCEaVrSHNtX.jpeg",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/UrbanRetreat2.jpg-kYx1AnjM4k1DoFK8T7A4qmgBhZnd8w.jpeg",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/UrbanRetreat3.jpg-FLiKcQ8POn1Cr64meQYM4DPDwsndiR.jpeg"
+    ]
+  }
+]
+
