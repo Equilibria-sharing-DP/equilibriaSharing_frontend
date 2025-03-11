@@ -374,8 +374,8 @@ export function FormAustria() {
                 <CardContent>
                     {/* Bilder */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-                        {(accommodationDetails?.pictureUrls ?? []).length > 0 ? (
-                            (accommodationDetails?.pictureUrls ?? []).map((url, index) => (
+                        {(accommodationDetails?.pictureUrls ?? []).slice(0, 3).length > 0 ? (
+                            (accommodationDetails?.pictureUrls ?? []).slice(0, 3).map((url, index) => (
                                 <div key={index} className="relative w-full h-32 rounded-lg overflow-hidden shadow-sm">
                                     <Image
                                         src={url}
