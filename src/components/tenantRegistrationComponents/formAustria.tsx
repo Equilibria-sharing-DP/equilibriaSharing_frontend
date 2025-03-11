@@ -4,6 +4,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -24,7 +25,8 @@ import {
 import { DatePickerYear } from "@/components/date-picker-year";
 import { CountryDropdown } from "@/components/country-dropdown-menu";
 import { Progress } from "@/components/ui/progress";
-
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 const genderOptions = [
     { value: "MALE", label: "Männlich" },
@@ -221,7 +223,7 @@ export function FormAustria() {
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            accommodationId: urlParams?.accommodationId ?? 1,
+            accommodationId: urlParams?.accommodationId ?? undefined,
             checkIn: urlParams?.checkIn ?? undefined,
             expectedCheckOut: urlParams?.expectedCheckOut ?? undefined,
             additionalGuests: [],
@@ -363,32 +365,57 @@ export function FormAustria() {
 
     const pages = [
         <div key="page1">
-            {accommodationDetails && (
-                <div className="mb-4 p-4 border rounded-lg shadow-sm">
-                    <h3 className="text-lg font-semibold">Buchungsinformationen</h3>
-                    <p className="text-xs mb-6">
-                        Bei nicht Korrekten Reisedaten bei Vermieter Melden!
-                    </p>
-                    <div className="grid grid-cols-3 gap-4 mt-4">
-                        {accommodationDetails.pictureUrls.length > 0 ? (
-                            accommodationDetails.pictureUrls.map((url, index) => (
-                                <img key={index} src={url} alt={`Bild ${index + 1}`}
-                                     className="w-full h-auto rounded-lg"/>
+            <Card className="mb-6 p-4 shadow-md">
+                <CardHeader>
+                    <CardTitle className="text-lg font-semibold">Buchungsinformationen</CardTitle>
+                    <p className="text-xs text-gray-500">Bei nicht korrekten Reisedaten beim Vermieter melden!</p>
+                </CardHeader>
+
+                <CardContent>
+                    {/* Bilder */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                        {(accommodationDetails?.pictureUrls ?? []).length > 0 ? (
+                            (accommodationDetails?.pictureUrls ?? []).map((url, index) => (
+                                <div key={index} className="relative w-full h-32 rounded-lg overflow-hidden shadow-sm">
+                                    <Image
+                                        src={url}
+                                        alt={`Bild ${index + 1}`}
+                                        layout="fill"
+                                        objectFit="cover"
+                                        className="rounded-lg"
+                                    />
+                                </div>
                             ))
                         ) : (
-                            <p>Keine Bilder verfügbar</p>
+                            <p className="col-span-full text-gray-500">Keine Bilder verfügbar</p>
                         )}
                     </div>
-                    <p><strong>Name:</strong> {accommodationDetails.name}</p>
-                    <p><strong>Beschreibung:</strong> {accommodationDetails.description}</p>
-                    <p>
-                        <strong>Adresse:</strong> {`${accommodationDetails.address.street} ${accommodationDetails.address.houseNumber}, ${accommodationDetails.address.postalCode} ${accommodationDetails.address.city}, ${accommodationDetails.address.country}`}
-                    </p>
 
-                    <p className="mt-4"><strong>Ankunftsdatum:</strong> {urlParams?.checkIn.toLocaleDateString()}</p>
-                    <p><strong>Abreisedatum:</strong> {urlParams?.expectedCheckOut.toLocaleDateString()}</p>
-                </div>
-            )}
+                    <Separator className="my-4"/>
+
+                    {/* Unterkunftsinfos */}
+                    <div className="space-y-2 text-sm">
+                        <p><strong>Name:</strong> {accommodationDetails?.name ?? "Nicht verfügbar"}</p>
+                        <p><strong>Beschreibung:</strong> {accommodationDetails?.description ?? "Nicht verfügbar"}</p>
+                        <p>
+                            <strong>Adresse:</strong>{" "}
+                            {accommodationDetails
+                                ? `${accommodationDetails.address.street} ${accommodationDetails.address.houseNumber}, 
+                                ${accommodationDetails.address.postalCode} ${accommodationDetails.address.city}, 
+                                ${accommodationDetails.address.country}`
+                                : "Nicht verfügbar"}
+                        </p>
+                    </div>
+
+                    <Separator className="my-4" />
+
+                    {/* Reisedaten (dezenter) */}
+                    <div className="flex flex-wrap gap-4 text-sm">
+                        <p><strong>Ankunft:</strong> {urlParams?.checkIn?.toLocaleDateString() ?? "Nicht verfügbar"}</p>
+                        <p><strong>Abreise:</strong> {urlParams?.expectedCheckOut?.toLocaleDateString() ?? "Nicht verfügbar"}</p>
+                    </div>
+                </CardContent>
+            </Card>
 
             <h3 className="text-lg font-semibold">Persönliche Daten</h3>
             <div className="grid grid-cols-2 gap-4">

@@ -23,4 +23,4 @@ npm run dev
 
 ## Testen
 URL zum Testen des des tenantRegistration:
-http://localhost:3000/tenantRegistration?data=eyJhY2NvbW1vZGF0aW9uSWQiOjYsImNoZWNrSW4iOiIyMDI1LTA3LTI2VDAwOjAwOjAwLjAwMFoiLCJleHBlY3RlZENoZWNrT3V0IjoiMjAyNS0wNy0zMFQwMDowMDowMC4wMDBaIn0=
+http://localhost:3000/tenantRegistration?data=eyJhY2NvbW1vZGF0aW9uSWQiOjEsImNoZWNrSW4iOiIyMDI1LTA3LTI2VDAwOjAwOjAwLjAwMFoiLCJleHBlY3RlZENoZWNrT3V0IjoiMjAyNS0wNy0zMFQwMDowMDowMC4wMDBaIn0=
