@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
-import {ModeToggle} from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export const Navbar = () => {
-
     return (
         <div className="max-w-screen-xl gap-4 mx-auto ">
             <nav className="container relative flex items-center justify-between p-4 mx-auto lg:justify-between">
@@ -12,8 +12,8 @@ export const Navbar = () => {
                 </Link>
 
                 <div className="hidden lg:flex lg:items-center">
-
-                        <ModeToggle/>
+                    <ModeToggle />
+                    <LanguageSwitcher />
                 </div>
             </nav>
         </div>

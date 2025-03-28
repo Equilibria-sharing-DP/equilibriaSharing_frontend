@@ -4,6 +4,9 @@ import "@/app/globals.css";
 import {Footer} from "@/components/footer";
 import {ThemeProvider} from "@/components/theme-provider";
 
+import {NextIntlClientProvider} from 'next-intl';
+import {getLocale} from 'next-intl/server';
+
 const geistSans = localFont({
     src: "../fonts/GeistVF.woff",
     variable: "--font-geist-sans",
@@ -22,19 +25,24 @@ export const metadata = {
     },
 };
 
-export default function TenantRegistrationLayout({
+export default async function TenantRegistrationLayout({
                                                      children,
                                                  }: Readonly<{
     children: React.ReactNode;
 }>) {
+
+    const locale = await getLocale();
+
     return (
         <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="white" enableSystem>
-            <Navbar/>
-            {children}
-            <Footer/>
-        </ThemeProvider>
+        <NextIntlClientProvider>
+            <ThemeProvider attribute="class" defaultTheme="white" enableSystem>
+                <Navbar/>
+                {children}
+                <Footer/>
+            </ThemeProvider>
+        </NextIntlClientProvider>
         </body>
         </html>
     );
