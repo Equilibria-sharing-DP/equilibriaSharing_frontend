@@ -217,6 +217,7 @@ export function FormAustria() {
     const [currentPage, setCurrentPage] = useState(0);
     const [accommodationDetails, setAccommodationDetails] = useState<AccommodationDetails | null>(null);
     const searchParams = useSearchParams();
+
     // Lese den Base64-kodierten `data`-Parameter aus der URL
     const encodedData = searchParams.get("data");
     const urlParams = decodeUrlParams(encodedData);
@@ -274,11 +275,10 @@ export function FormAustria() {
                 }
                 const data: AccommodationDetails = await response.json();
                 setAccommodationDetails(data);
-            } catch (error) {
-                console.error("Error fetching accommodation details:", error);
+            } catch {
+                router.push("/error?code=400")
             }
         };
-
         fetchAccommodationDetails();
     }, [urlParams?.accommodationId]);
 
@@ -356,9 +356,8 @@ export function FormAustria() {
             const result = await response.json();
             router.push("/tenantRegistration/registrationComplete");
             return result;
-        } catch (error) {
+        } catch {
             router.push("/error?code=500")
-            console.error("Fehler beim Absenden des Formulars:", error);
         }
     };
 
@@ -795,7 +794,7 @@ export function FormAustria() {
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => append({firstName: '', lastName: '', birthDate: new Date()})}
+                            onClick={() => append({firstName: '', lastName: '', birthDate:  new Date('') })}
                         >
                             Mitreisenden hinzufügen
                         </Button>
