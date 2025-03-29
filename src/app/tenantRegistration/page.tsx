@@ -13,7 +13,7 @@ export default function TenantRegistrationPage(): ReactElement {
                             {t('title')}
                         </h1>
                         <p className="text-sm mb-6">
-                            <span className="text-red-600">*</span> Pflichtfeld
+                            <span className="text-red-600">*</span> {t('subtitle')}
                         </p>
                         <FormAustria />
                     </div>

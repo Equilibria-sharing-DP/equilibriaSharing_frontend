@@ -1,20 +1,73 @@
 {
-    "navbar":{
-        "title": "Mieterdaten Erfassung"
-    },
-    "footer":{
-        "imprint":"Impressum",
-        "contact":"Kontakt",
-        "privacyPolicy":"Datenschutz"
+    "footer": {
+        "imprint": "Impressum",
+        "contact": "Kontakt",
+        "privacyPolicy": "Datenschutz"
     },
     "form": {
         "title": "Mieter Registrierung",
-        "pages": {
-            "bookingInfo": "Buchungsinformationen",
-            "personalData": "Persönliche Daten",
-            "address": "Adresse",
-            "travelDocument": "Reisedokument",
-            "additionalGuests": "Mitreisende"
+        "subtitle": "Pflichtfeld",
+        "bookingInfo": {
+            "title": "Buchungsinformationen",
+            "subtitle": "Bei falschen Reisedaten den Vermieter kontaktieren!",
+            "pictures": {
+                "title": "Bilder",
+                "error": "Keine Bilder verfügbar"
+            },
+            "accommodationDetails": {
+                "title": "Unterkunftsinformationen",
+                "name": "Name",
+                "description": "Beschreibung",
+                "address": {
+                    "title": "Adresse",
+                    "street": "Straße",
+                    "houseNumber": "Hausnummer",
+                    "postalCode": "Postleitzahl",
+                    "city": "Stadt",
+                    "country": "Land"
+                }
+            },
+            "travelDates": {
+                "title": "Reisedaten",
+                "checkIn": "Ankunft",
+                "expectedCheckOut": "Abreise"
+            },
+            "error":"Nicht verfügbar!"
+        },
+        "personalData": {
+            "title": "Persönliche Daten",
+            "firstName": "Vorname",
+            "lastName": "Nachname",
+            "gender" : {
+                "title": "Geschlecht",
+                "male": "Männlich",
+                "female": "Weiblich",
+                "diverse": "Divers",
+                "genderPlaceholder": "Geschlecht auswählen"
+            },
+            "birthdate": "Geburtsdatum",
+            "errors": {
+                "firstName":{
+                    "required": "Vorname ist erforderlich",
+                    "maxlength": "Vorname darf maximal 50 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "lastName":{
+                    "required": "Familienname ist erforderlich",
+                    "maxlength": "Familienname darf maximal 50 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "gender":{
+                    "required": "Geschlecht ist erforderlich"
+                },
+                "birthdate":{
+                    "required": "Geburtsdatum ist erforderlich",
+                    "future": "Geburtsdatum darf nicht in der Zukunft liegen",
+                    "ageMainTenant": "Der Hauptmieter muss mindestens 18 Jahre alt sein"
+                },
+                "default": "Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Eingaben."
+            }
+            
         }
     }
 }

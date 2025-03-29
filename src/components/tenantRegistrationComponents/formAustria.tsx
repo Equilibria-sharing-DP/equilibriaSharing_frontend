@@ -28,9 +28,9 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import {useTranslations} from 'next-intl';
 const genderOptions = [
-    { value: "MALE", label: "Männlich" },
-    { value: "FEMALE", label: "Weiblich" },
-    { value: "OTHER", label: "Divers" },
+    { value: "MALE", label: "personalData.gender.male" },
+    { value: "FEMALE", label: "personalData.gender.female" },
+    { value: "OTHER", label: "personalData.gender.diverse" },
 ];
 
 const documentTypes = [
@@ -52,29 +52,28 @@ const formSchema = z.object({
 
     mainTraveler: z.object({
         firstName: z.string({
-                required_error: "Vorname ist erforderlich",
-            }).max(50, "Vorname darf maximal 50 Zeichen lang sein")
-            .max(50, "Vorname darf maximal 50 Zeichen lang sein")
+                required_error: "personalData.errors.firstName.required",
+            }).max(50, "personalData.errors.firstName.maxlength")
             .refine((value) => nameRegex.test(value), {
-                message: "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt.",
+                message: "personalData.errors.firstName.forbiddenCharacters",
             }),
 
         lastName: z.string({
-                required_error: "Familienname ist erforderlich",
-            }).max(50, "Familienname darf maximal 50 Zeichen lang sein")
+                required_error: "personalData.errors.lastName.required",
+            }).max(50, "personalData.errors.lastName.maxlength")
             .refine((value) => nameRegex.test(value), {
-                message: "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt.",
+                message: "personalData.errors.lastName.forbiddenCharacters",
             }),
 
         gender: z.enum(["MALE", "FEMALE", "OTHER"], {
-            required_error: "Geschlecht ist erforderlich",
+            required_error: "personalData.errors.gender.required",
         }),
 
         birthDate: z.date({
-                required_error: "Geburtsdatum ist erforderlich",
+                required_error: "personalData.errors.birthdate.required",
             })
-            .refine(date => date <= new Date(), "Geburtsdatum darf nicht in der Zukunft liegen")
-            .refine(isAdult, "Der Hauptmieter muss mindestens 18 Jahre alt sein"),
+            .refine(date => date <= new Date(), "personalData.errors.birthdate.future")
+            .refine(isAdult, "personalData.errors.birthdate.ageMainTenant"),
 
         city: z.string({
                 required_error: "Stadt ist erforderlich",
@@ -363,11 +362,11 @@ export function FormAustria() {
     const pages = [
         <div key="page0">
             <div className="mb-6">
-                <h3 className="text-lg font-semibold">Buchungsinformationen</h3>
-                <p className="text-xs text-gray-500">Bei nicht korrekten Reisedaten beim Vermieter melden!</p>
+                <h3 className="text-lg font-semibold">{t('bookingInfo.title')}</h3>
+                <p className="text-xs text-gray-500">{t('bookingInfo.subtitle')}</p>
                 
                 {/* Bilder */}
-                <h3 className="text-lg font-semibold mt-4">Bilder</h3>
+                <h4 className="text-base font-semibold mt-4">{t('bookingInfo.pictures.title')}</h4>
                 <div className="grid grid-cols-2 gap-4">
                     {(accommodationDetails?.pictureUrls ?? []).slice(0, 3).length > 0 ? (
                         (accommodationDetails?.pictureUrls ?? []).slice(0, 3).map((url, index) => (
@@ -382,38 +381,38 @@ export function FormAustria() {
                             </div>
                         ))
                     ) : (
-                        <p className="col-span-full text-gray-500">Keine Bilder verfügbar</p>
+                        <p className="col-span-full text-xs text-gray-500">{t('bookingInfo.pictures.error')}</p>
                     )}
                 </div>
                 
                 <Separator className="my-4" />
                 
                 {/* Unterkunftsinfos */}
-                <h3 className="text-lg font-semibold">Unterkunftsinformationen</h3>
-                <div className="gap-4">
-                    <p><strong>Name:</strong> {accommodationDetails?.name ?? "Nicht verfügbar"}</p>
-                    <p><strong>Beschreibung:</strong> {accommodationDetails?.description ?? "Nicht verfügbar"}</p>
+                <h3 className="text-base font-semibold">{t('bookingInfo.accommodationDetails.title')}</h3>
+                <div className="gap-4 text-sm">
+                    <p><strong>{t('bookingInfo.accommodationDetails.name')}:</strong> {accommodationDetails?.name ?? t('bookingInfo.error')}</p>
+                    <p><strong>{t('bookingInfo.accommodationDetails.description')}:</strong> {accommodationDetails?.description ?? t('bookingInfo.error')}</p>
                     <p className="col-span-2">
-                        <strong>Adresse:</strong> {accommodationDetails
+                        <strong>{t('bookingInfo.accommodationDetails.title')}:</strong> {accommodationDetails
                             ? `${accommodationDetails.address.street} ${accommodationDetails.address.houseNumber}, 
                                 ${accommodationDetails.address.postalCode} ${accommodationDetails.address.city}, 
                                 ${accommodationDetails.address.country}`
-                            : "Nicht verfügbar"}
+                            : t('bookingInfo.error')}
                     </p>
                 </div>
                 
                 <Separator className="my-4" />
                 
                 {/* Reisedaten */}
-                <h3 className="text-lg font-semibold">Reisedaten</h3>
-                <div className="grid grid-cols-2 gap-4">
-                    <p><strong>Ankunft:</strong> {urlParams?.checkIn?.toLocaleDateString() ?? "Nicht verfügbar"}</p>
-                    <p><strong>Abreise:</strong> {urlParams?.expectedCheckOut?.toLocaleDateString() ?? "Nicht verfügbar"}</p>
+                <h3 className="text-base font-semibold">{t('bookingInfo.travelDates.title')}</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                    <p><strong>{t('bookingInfo.travelDates.checkIn')}:</strong> {urlParams?.checkIn?.toLocaleDateString() ?? t('bookingInfo.error')}</p>
+                    <p><strong>{t('bookingInfo.travelDates.expectedCheckOut')}:</strong> {urlParams?.expectedCheckOut?.toLocaleDateString() ?? t('bookingInfo.error')}</p>
                 </div>
             </div>
         </div>,
         <div key="page1">
-            <h3 className="text-lg font-semibold">Persönliche Daten</h3>
+            <h3 className="text-lg font-semibold">{t('personalData.title')}</h3>
             <div className="grid grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
@@ -421,12 +420,13 @@ export function FormAustria() {
                     render={({field, fieldState}) => (
                         <FormItem>
                             <FormLabel>
-                                Vorname<span className="text-red-500 ml-1">*</span>
+                            {t('personalData.firstName')}<span className="text-red-500 ml-1">*</span>
                             </FormLabel>
                             <FormControl>
                                 <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
-                            <FormMessage/>
+                            <FormMessage />
+
                         </FormItem>
                     )}
                 />
@@ -436,7 +436,7 @@ export function FormAustria() {
                     name="mainTraveler.lastName"
                     render={({field, fieldState}) => (
                         <FormItem>
-                            <FormLabel>Familienname<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormLabel>{t('personalData.lastName')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
                                 <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
@@ -450,18 +450,18 @@ export function FormAustria() {
                     render={({ field, fieldState }) => (
                         <FormItem>
                             <FormLabel>
-                                Geschlecht<span className="text-red-500 ml-1">*</span>
+                                {t('personalData.gender.title')}<span className="text-red-500 ml-1">*</span>
                             </FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
-                                    <SelectTrigger error={!!fieldState.error} placeholder="Geschlecht auswählen" value={field.value}>
+                                    <SelectTrigger error={!!fieldState.error} placeholder={t('personalData.gender.genderPlaceholder')} value={field.value}>
                                         <SelectValue/>
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
                                     {genderOptions.map((option) => (
                                         <SelectItem key={option.value} value={option.value}>
-                                            {option.label}
+                                            {t(option.label)}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -476,7 +476,7 @@ export function FormAustria() {
                     name="mainTraveler.birthDate"
                     render={({field, fieldState}) => (
                         <FormItem className="flex-1">
-                            <FormLabel>Geburtsdatum<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormLabel>{t('personalData.birthdate')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <DatePickerYear
                                 date={field.value}
                                 setDate={field.onChange}
@@ -592,8 +592,7 @@ export function FormAustria() {
                     )}
                 />
             </div>
-        </div>
-        ,
+        </div>,
         <div key="page3">
             <h3 className="text-lg font-semibold">Reisedokument<span className="text-red-500 ml-1">*</span></h3>
             <div className="grid grid-cols-2 gap-4">

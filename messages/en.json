@@ -1,7 +1,4 @@
 {
-    "navbar":{
-        "title": "Tenant Data Registration"
-    },
     "footer":{
         "imprint":"Imprint",
         "contact":"Contact",
@@ -10,7 +7,8 @@
     "form": {
         "title": "Tenant Registration",
         "pages": {
-            "bookingInfo": "Buchungsinformationen",
+            "bookingInfo": "Booking Information",
+            "bookingInfoSubtitle": "Please provide the booking information",
             "personalData": "Persönliche Daten",
             "address": "Adresse",
             "travelDocument": "Reisedokument",
