@@ -1,12 +1,14 @@
 {
     "navbar":{
-        "title": "Mieterdaten Erfassung"
+        "title": "Tenant Data Registration"
     },
     "footer":{
-        "quelle":"wasd"
+        "imprint":"Imprint",
+        "contact":"Contact",
+        "privacyPolicy":"Privacy Policy"
     },
     "form": {
-        "title": "Tenant Regestration",
+        "title": "Tenant Registration",
         "pages": {
             "bookingInfo": "Buchungsinformationen",
             "personalData": "Persönliche Daten",

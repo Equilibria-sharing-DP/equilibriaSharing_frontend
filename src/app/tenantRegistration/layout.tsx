@@ -1,5 +1,5 @@
 import localFont from "next/font/local";
-import {Navbar} from "@/components/tenantRegistrationComponents/navbar";
+import {Navbar} from "@/components/navbar";
 import "@/app/globals.css";
 import {Footer} from "@/components/footer";
 import {ThemeProvider} from "@/components/theme-provider";
@@ -35,15 +35,17 @@ export default async function TenantRegistrationLayout({
 
     return (
         <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <NextIntlClientProvider>
-            <ThemeProvider attribute="class" defaultTheme="white" enableSystem>
-                <Navbar/>
-                {children}
-                <Footer/>
-            </ThemeProvider>
-        </NextIntlClientProvider>
-        </body>
+            <NextIntlClientProvider>
+                <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+
+                    <ThemeProvider attribute="class" defaultTheme="white" enableSystem>
+                        <Navbar initialLocale={locale} />
+                        {children}
+                        <Footer/>
+                    </ThemeProvider>
+
+                </body>
+            </NextIntlClientProvider>
         </html>
     );
 }

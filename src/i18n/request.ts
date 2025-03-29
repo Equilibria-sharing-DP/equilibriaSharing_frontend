@@ -7,7 +7,7 @@ export default getRequestConfig(async () => {
     const locale = cookieLocale || defaultLocale;
 
     const messages = (await import(`../../messages/${locale}.json`)).default;
-
+    
     return {
         locale,
         messages,

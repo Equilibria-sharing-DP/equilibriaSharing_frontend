@@ -26,7 +26,8 @@ export const LanguageSwitcher = ({ initialLocale }: { initialLocale: string }) =
         params.set("locale", locale); // Update the locale in the query parameters
 
         setCurrentLocale(locale);
-        router.replace(`${pathname}?${params.toString()}`); // Preserve the path and query parameters
+        router.replace(`${pathname}?${params.toString()}`);
+        window.location.reload(); // Preserve the path and query parameters
     };
 
     useEffect(() => {

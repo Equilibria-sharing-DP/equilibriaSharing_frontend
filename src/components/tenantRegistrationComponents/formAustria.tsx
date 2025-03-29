@@ -25,9 +25,8 @@ import {
 import { DatePickerYear } from "@/components/date-picker-year";
 import { CountryDropdown } from "@/components/country-dropdown-menu";
 import { Progress } from "@/components/ui/progress";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-
+import {useTranslations} from 'next-intl';
 const genderOptions = [
     { value: "MALE", label: "Männlich" },
     { value: "FEMALE", label: "Weiblich" },
@@ -213,6 +212,8 @@ type AccommodationDetails = {
 };
 
 export function FormAustria() {
+    const t = useTranslations('form');
+
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(0);
     const [accommodationDetails, setAccommodationDetails] = useState<AccommodationDetails | null>(null);
@@ -239,7 +240,6 @@ export function FormAustria() {
     // Funktion zum Dekodieren der Base64-URL-Daten
     function decodeUrlParams(encodedData: string | null): { accommodationId: number; checkIn: Date; expectedCheckOut: Date } | null {
         if (!encodedData){
-            console.error("Fehler: Fehlende URL-Parameter");
             router.push("/error?code=400")
             return null;
         }
@@ -249,7 +249,6 @@ export function FormAustria() {
 
             // Prüfen, ob die notwendigen Felder existieren
             if (!parsedData.accommodationId || !parsedData.checkIn || !parsedData.expectedCheckOut) {
-                console.error("Fehler: Fehlerhafte URL-Parameter");
                 router.push("/error?code=400")
                 return null;
             }
@@ -259,7 +258,6 @@ export function FormAustria() {
                 expectedCheckOut: new Date(parsedData.expectedCheckOut),
             };
         } catch (error) {
-            console.error("Fehler beim Dekodieren der URL-Parameter:", error);
             router.push("/error?code=400")
             return null;
         }
@@ -283,7 +281,6 @@ export function FormAustria() {
     }, [urlParams?.accommodationId]);
 
     const validateCurrentPage = async () => {
-        console.log("Test3")
         const fieldNames = [
             currentPage === 1 && ["mainTraveler.firstName", "mainTraveler.lastName", "mainTraveler.gender", "mainTraveler.birthDate"],
             currentPage === 2 && [
@@ -342,7 +339,6 @@ export function FormAustria() {
             checkIn: new Date(data.checkIn),
             expectedCheckOut: new Date(data.expectedCheckOut),
         };
-        console.log("Test2")
         try {
             const parsedData = formSchema.parse(formattedData);
             const response = await fetch("http://localhost:8080/api/v1/bookings", {

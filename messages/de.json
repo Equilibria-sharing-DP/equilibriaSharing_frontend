@@ -3,7 +3,9 @@
         "title": "Mieterdaten Erfassung"
     },
     "footer":{
-        "quelle":"wasd"
+        "imprint":"Impressum",
+        "contact":"Kontakt",
+        "privacyPolicy":"Datenschutz"
     },
     "form": {
         "title": "Mieter Registrierung",
@@ -16,4 +18,3 @@
         }
     }
 }
-                
