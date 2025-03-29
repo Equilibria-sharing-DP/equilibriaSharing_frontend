@@ -2,7 +2,7 @@
 "use client";
 
 import { Navbar } from "@/components/tenantDataManagementComponents/navbar";
-import { Footer } from "@/components/footer";
+import { Footer } from "@/components/tenantDataManagementComponents/footer";
 import { usePathname } from "next/navigation";
 
 export default function TenantDataManagementLayoutClient({ children }: { children: React.ReactNode }) {

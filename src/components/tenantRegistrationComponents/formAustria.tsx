@@ -40,7 +40,7 @@ const documentTypes = [
     { value: "DRIVING_LICENCE", label: "Führerschein" },
 ];
 
-const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/; // Erlaubt Buchstaben, Umlaute, Leerzeichen, Bindestrich, Apostroph
+const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s'-]+$/;// Erlaubt Buchstaben, Umlaute, Leerzeichen, Bindestrich, Apostroph
 const alphanumericRegex = /^[A-Za-z0-9]+$/; // Nur Buchstaben & Zahlen für Dokumentnummern
 const isAdult = (date: Date) => {
     const today = new Date();
@@ -186,7 +186,7 @@ const formSchema = z.object({
                 required_error: "Geburtsdatum erforderlich",
             }).refine(date => date <= new Date(), "Geburtsdatum darf nicht in der Zukunft liegen"),
         })
-    ).max(10, "Es können maximal 5 Mitreisende hinzugefügt werden"),
+    ).max(10, "Es können maximal 10 Mitreisende hinzugefügt werden"),
 
 }).refine((data) => data.expectedCheckOut > data.checkIn, {
     message: "Abreisedatum muss nach dem Ankunftsdatum liegen",
@@ -217,6 +217,7 @@ export function FormAustria() {
     const [currentPage, setCurrentPage] = useState(0);
     const [accommodationDetails, setAccommodationDetails] = useState<AccommodationDetails | null>(null);
     const searchParams = useSearchParams();
+
     // Lese den Base64-kodierten `data`-Parameter aus der URL
     const encodedData = searchParams.get("data");
     const urlParams = decodeUrlParams(encodedData);
@@ -274,25 +275,26 @@ export function FormAustria() {
                 }
                 const data: AccommodationDetails = await response.json();
                 setAccommodationDetails(data);
-            } catch (error) {
-                console.error("Error fetching accommodation details:", error);
+            } catch {
+                router.push("/error?code=400")
             }
         };
-
         fetchAccommodationDetails();
     }, [urlParams?.accommodationId]);
 
     const validateCurrentPage = async () => {
+        console.log("Test3")
         const fieldNames = [
-            currentPage === 0 && ["mainTraveler.firstName", "mainTraveler.lastName", "mainTraveler.gender", "mainTraveler.birthDate"],
-            currentPage === 1 && [
+            currentPage === 1 && ["mainTraveler.firstName", "mainTraveler.lastName", "mainTraveler.gender", "mainTraveler.birthDate"],
+            currentPage === 2 && [
                 "mainTraveler.city",
                 "mainTraveler.postalCode",
                 "mainTraveler.street",
+                "mainTraveler.addressAdditional",
                 "mainTraveler.houseNumber",
                 "mainTraveler.country",
             ],
-            currentPage === 2 && [
+            currentPage === 3 && [
                 "mainTraveler.travelDocumentType",
                 "mainTraveler.issueDate",
                 "mainTraveler.expiryDate",
@@ -300,14 +302,14 @@ export function FormAustria() {
                 "mainTraveler.issuingCountry",
                 "mainTraveler.documentNr",
             ],
-            currentPage === 3 && fields.map((_, index) => [
+            currentPage === 4 && fields.map((_, index) => [
                 `additionalGuests.${index}.firstName`,
                 `additionalGuests.${index}.lastName`,
                 `additionalGuests.${index}.birthDate`,
             ]).flat(),
         ].filter(Boolean).flat();
 
-        if (fieldNames.length > 0) {
+        if (fieldNames.length > 1) {
             return await form.trigger(fieldNames as Parameters<typeof form.trigger>[0]);
         }
         return true;
@@ -340,7 +342,7 @@ export function FormAustria() {
             checkIn: new Date(data.checkIn),
             expectedCheckOut: new Date(data.expectedCheckOut),
         };
-
+        console.log("Test2")
         try {
             const parsedData = formSchema.parse(formattedData);
             const response = await fetch("http://localhost:8080/api/v1/bookings", {
@@ -356,67 +358,65 @@ export function FormAustria() {
             const result = await response.json();
             router.push("/tenantRegistration/registrationComplete");
             return result;
-        } catch (error) {
+        } catch {
             router.push("/error?code=500")
-            console.error("Fehler beim Absenden des Formulars:", error);
         }
     };
 
 
     const pages = [
-        <div key="page1">
-            <Card className="mb-6 p-4 shadow-md">
-                <CardHeader>
-                    <CardTitle className="text-lg font-semibold">Buchungsinformationen</CardTitle>
-                    <p className="text-xs text-gray-500">Bei nicht korrekten Reisedaten beim Vermieter melden!</p>
-                </CardHeader>
-
-                <CardContent>
-                    {/* Bilder */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-                        {(accommodationDetails?.pictureUrls ?? []).length > 0 ? (
-                            (accommodationDetails?.pictureUrls ?? []).map((url, index) => (
-                                <div key={index} className="relative w-full h-32 rounded-lg overflow-hidden shadow-sm">
-                                    <Image
-                                        src={url}
-                                        alt={`Bild ${index + 1}`}
-                                        layout="fill"
-                                        objectFit="cover"
-                                        className="rounded-lg"
-                                    />
-                                </div>
-                            ))
-                        ) : (
-                            <p className="col-span-full text-gray-500">Keine Bilder verfügbar</p>
-                        )}
-                    </div>
-
-                    <Separator className="my-4"/>
-
-                    {/* Unterkunftsinfos */}
-                    <div className="space-y-2 text-sm">
-                        <p><strong>Name:</strong> {accommodationDetails?.name ?? "Nicht verfügbar"}</p>
-                        <p><strong>Beschreibung:</strong> {accommodationDetails?.description ?? "Nicht verfügbar"}</p>
-                        <p>
-                            <strong>Adresse:</strong>{" "}
-                            {accommodationDetails
-                                ? `${accommodationDetails.address.street} ${accommodationDetails.address.houseNumber}, 
+        <div key="page0">
+            <div className="mb-6">
+                <h3 className="text-lg font-semibold">Buchungsinformationen</h3>
+                <p className="text-xs text-gray-500">Bei nicht korrekten Reisedaten beim Vermieter melden!</p>
+                
+                {/* Bilder */}
+                <h3 className="text-lg font-semibold mt-4">Bilder</h3>
+                <div className="grid grid-cols-2 gap-4">
+                    {(accommodationDetails?.pictureUrls ?? []).slice(0, 3).length > 0 ? (
+                        (accommodationDetails?.pictureUrls ?? []).slice(0, 3).map((url, index) => (
+                            <div key={index} className="relative w-full h-32 rounded-lg overflow-hidden shadow-sm">
+                                <Image
+                                    src={url}
+                                    alt={`Bild ${index + 1}`}
+                                    layout="fill"
+                                    objectFit="cover"
+                                    className="rounded-lg"
+                                />
+                            </div>
+                        ))
+                    ) : (
+                        <p className="col-span-full text-gray-500">Keine Bilder verfügbar</p>
+                    )}
+                </div>
+                
+                <Separator className="my-4" />
+                
+                {/* Unterkunftsinfos */}
+                <h3 className="text-lg font-semibold">Unterkunftsinformationen</h3>
+                <div className="gap-4">
+                    <p><strong>Name:</strong> {accommodationDetails?.name ?? "Nicht verfügbar"}</p>
+                    <p><strong>Beschreibung:</strong> {accommodationDetails?.description ?? "Nicht verfügbar"}</p>
+                    <p className="col-span-2">
+                        <strong>Adresse:</strong> {accommodationDetails
+                            ? `${accommodationDetails.address.street} ${accommodationDetails.address.houseNumber}, 
                                 ${accommodationDetails.address.postalCode} ${accommodationDetails.address.city}, 
                                 ${accommodationDetails.address.country}`
-                                : "Nicht verfügbar"}
-                        </p>
-                    </div>
-
-                    <Separator className="my-4" />
-
-                    {/* Reisedaten (dezenter) */}
-                    <div className="flex flex-wrap gap-4 text-sm">
-                        <p><strong>Ankunft:</strong> {urlParams?.checkIn?.toLocaleDateString() ?? "Nicht verfügbar"}</p>
-                        <p><strong>Abreise:</strong> {urlParams?.expectedCheckOut?.toLocaleDateString() ?? "Nicht verfügbar"}</p>
-                    </div>
-                </CardContent>
-            </Card>
-
+                            : "Nicht verfügbar"}
+                    </p>
+                </div>
+                
+                <Separator className="my-4" />
+                
+                {/* Reisedaten */}
+                <h3 className="text-lg font-semibold">Reisedaten</h3>
+                <div className="grid grid-cols-2 gap-4">
+                    <p><strong>Ankunft:</strong> {urlParams?.checkIn?.toLocaleDateString() ?? "Nicht verfügbar"}</p>
+                    <p><strong>Abreise:</strong> {urlParams?.expectedCheckOut?.toLocaleDateString() ?? "Nicht verfügbar"}</p>
+                </div>
+            </div>
+        </div>,
+        <div key="page1">
             <h3 className="text-lg font-semibold">Persönliche Daten</h3>
             <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -790,13 +790,13 @@ export function FormAustria() {
                     ))}
                 </div>
 
-                {fields.length < 5 && (
+                {fields.length < 10 && (
                     <div className="mt-6 flex justify-center">
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => append({firstName: '', lastName: '', birthDate: new Date()})}
-                        >
+                            onClick={() => append({firstName: '', lastName: '', birthDate: new Date() })}
+                        >   
                             Mitreisenden hinzufügen
                         </Button>
                     </div>

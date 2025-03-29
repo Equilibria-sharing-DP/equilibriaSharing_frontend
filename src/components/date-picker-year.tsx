@@ -51,7 +51,7 @@ export function DatePickerYear({ date, setDate, error }: DatePickerYearProps) {
                     )}
                 >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "PPP") : <span>Datum auswählen</span>}
+                    {date instanceof Date && !isNaN(date.getTime()) ? format(date, "PPP") : <span>Datum auswählen</span>}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
@@ -83,9 +83,9 @@ export function DatePickerYear({ date, setDate, error }: DatePickerYearProps) {
                 </div>
                 <Calendar
                     mode="single"
-                    selected={date}
+                    selected={date || new Date()} // Fallback to the current date if date is undefined
                     onSelect={setDate}
-                    month={new Date(year, month)}
+                    month={new Date(year || new Date().getFullYear(), month)} // Fallback to the current year if year is undefined
                     onMonthChange={(newMonth) => {
                         setMonth(newMonth.getMonth())
                         setYear(newMonth.getFullYear())
