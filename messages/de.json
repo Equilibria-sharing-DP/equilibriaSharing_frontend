@@ -1,5 +1,19 @@
 {
+    "navbar":{
+        "title": "Mieterdaten Erfassung"
+    },
+    "footer":{
+        "quelle":"wasd"
+    },
     "form": {
-      "title": "Mieter Registrierung"
+        "title": "Mieter Registrierung",
+        "pages": {
+            "bookingInfo": "Buchungsinformationen",
+            "personalData": "Persönliche Daten",
+            "address": "Adresse",
+            "travelDocument": "Reisedokument",
+            "additionalGuests": "Mitreisende"
+        }
     }
-  }
+}
+                

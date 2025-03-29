@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ModeToggle } from "@/components/mode-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
 
-export const Navbar = () => {
+export const Navbar = ({ initialLocale }: { initialLocale: string }) => {
     return (
         <div className="max-w-screen-xl gap-4 mx-auto ">
             <nav className="container relative flex items-center justify-between p-4 mx-auto lg:justify-between">
@@ -11,9 +11,9 @@ export const Navbar = () => {
                     <span>Equilibira Sharing - Mieterdaten Erfassung</span>
                 </Link>
 
-                <div className="hidden lg:flex lg:items-center">
+                <div className="flex items-center px-4 space-x-4">
+                    <LanguageSwitcher initialLocale={initialLocale} />
                     <ModeToggle />
-                    <LanguageSwitcher />
                 </div>
             </nav>
         </div>
