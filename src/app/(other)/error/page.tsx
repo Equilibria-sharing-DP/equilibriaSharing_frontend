@@ -5,4 +5,5 @@ import {ErrorPage} from '@/components/error';
 export default function ErrorPageWrapper(): ReactElement {
 
     return <ErrorPage />;
+    
 };

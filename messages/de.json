@@ -188,5 +188,34 @@
             "previous": "Zurück",
             "submit": "Abschicken"
         }
+    },
+    "errors": {
+        "errorMessages": {
+            "400": {
+                "title": "Ungültige Anfrage",
+                "message": "Die angeforderte Seite kann nicht verarbeitet werden, da erforderliche Daten fehlen."
+            },
+            "401": {
+                "title": "Nicht autorisiert",
+                "message": "Sie haben keine Berechtigung, diese Seite zu sehen."
+            },
+            "403": {
+                "title": "Zugriff verweigert",
+                "message": "Sie haben keinen Zugriff auf diese Ressource."
+            },
+            "404": {
+                "title": "Seite nicht gefunden",
+                "message": "Die gesuchte Seite existiert nicht oder wurde verschoben."
+            },
+            "500": {
+                "title": "Serverfehler",
+                "message": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
+            },
+            "defaultError": {
+                "title": "Unbekannter Fehler",
+                "message": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
+            }
+        },
+        "goBackButton" : "Zurück"
     }
 }

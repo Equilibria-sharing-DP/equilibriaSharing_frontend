@@ -9,7 +9,7 @@ export default function TenantRegistrationPage(): ReactElement {
                         <h1 className="text-2xl font-semibold">
                             Datenschutz
                         </h1>
-                        YAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAPYAP
+                        Placeholder
                     </div>
                 </div>
             </div>
