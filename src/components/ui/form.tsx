@@ -146,11 +146,12 @@ FormDescription.displayName = "FormDescription"
 
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, children, ...props }, ref) => {
+  React.HTMLAttributes<HTMLParagraphElement> & { shouldTranslate?: boolean }
+>(({ className, children, shouldTranslate = false, ...props }, ref) => {
   const { error, formMessageId } = useFormField()
   const body = error ? String(error?.message) : children
-  const t = useTranslations('form');
+  const t = useTranslations('form')
+
   if (!body) {
     return null
   }
@@ -162,7 +163,7 @@ const FormMessage = React.forwardRef<
       className={cn("text-xs font-medium", error && "text-red-500 dark:text-red-400", className)}
       {...props}
     >
-      {typeof body === "string" ? t(body) : body}
+      {typeof body === "string" && shouldTranslate ? t(body) : body}
     </p>
   )
 })

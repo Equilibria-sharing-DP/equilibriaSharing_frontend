@@ -15,9 +15,10 @@ interface DatePickerYearProps {
     date: Date | undefined
     setDate: (date: Date | undefined) => void
     error?: boolean // Optional error prop
+    placeholder?: string // Optional placeholder prop
 }
 
-export function DatePickerYear({ date, setDate, error }: DatePickerYearProps) {
+export function DatePickerYear({ date, setDate, error, placeholder = "Datum auswählen" }: DatePickerYearProps) {
     const [month, setMonth] = React.useState<number>(date instanceof Date ? date.getMonth() : new Date().getMonth())
     const [year, setYear] = React.useState<number>(date instanceof Date ? date.getFullYear() : new Date().getFullYear())
 
@@ -51,7 +52,7 @@ export function DatePickerYear({ date, setDate, error }: DatePickerYearProps) {
                     )}
                 >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date instanceof Date && !isNaN(date.getTime()) ? format(date, "PPP") : <span>Datum auswählen</span>}
+                    {date instanceof Date && !isNaN(date.getTime()) ? format(date, "PPP") : <span>{placeholder}</span>}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">

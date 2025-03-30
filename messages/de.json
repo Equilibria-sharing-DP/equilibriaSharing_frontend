@@ -68,6 +68,125 @@
                 "default": "Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Eingaben."
             }
             
+        },
+        "address": {
+            "title": "Adresse",
+            "city": "Stadt",
+            "postalCode": "Postleitzahl",
+            "street": "Straße",
+            "houseNumber": "Hausnummer",
+            "addressAdditional": "Adresszusatz",
+            "country": "Staatsangehörigkeit",
+            "errors": {
+                "city": {
+                    "required": "Stadt ist erforderlich",
+                    "maxlength": "Stadtname darf maximal 100 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "postalCode": {
+                    "required": "Postleitzahl ist erforderlich",
+                    "int": "Postleitzahl muss eine ganze Zahl sein",
+                    "positive": "Postleitzahl muss positiv sein",
+                    "maxlength": "Postleitzahl darf maximal 7 Ziffern haben"
+                },
+                "street": {
+                    "required": "Straße ist erforderlich",
+                    "maxlength": "Straßenname darf maximal 100 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "houseNumber": {
+                    "required": "Hausnummer ist erforderlich",
+                    "int": "Hausnummer muss eine ganze Zahl sein",
+                    "positive": "Die Hausnummer muss positiv sein",
+                    "maxlength": "Hausnummer darf maximal 5 Ziffern haben"
+                },
+                "addressAdditional": {
+                    "maxlength": "Zusätzliche Adressinfos dürfen maximal 100 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "country": {
+                    "required": "Land ist erforderlich",
+                    "maxlength": "Landesname darf maximal 100 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                }
+            }
+        },
+        "travelDocument": {
+            "title": "Reisedokument",
+            "travelDocumentType": {
+                "title": "Reisedokumenttyp",
+                "passport": "Reisepass",
+                "idCard": "Personalausweis",
+                "drivingLicense": "Führerschein",
+                "placeholder": "Dokumenttyp ausswählen"
+            },
+            "documentNr": "Dokumentnummer",
+            "issueDate": "Ausstellungsdatum",
+            "expiryDate": "Ablaufdatum",
+            "issuingAuthority": "Ausstellende Behörde",
+            "issuingCountry": {
+                "title":"Ausstellender Staat",
+                "placeholder": "Land auswählen"
+            },
+            "errors": {
+                "travelDocumentType": {
+                    "required": "Reisedokumenttyp ist erforderlich"
+                },
+                "documentNr": {
+                    "required": "Dokumentnummer ist erforderlich",
+                    "maxlength": "Dokumentnummer darf maximal 20 Zeichen lang sein",
+                    "alphanumeric": "Nur Buchstaben und Zahlen erlaubt"
+                },
+                "issueDate": {
+                    "required": "Ausstellungsdatum ist erforderlich",
+                    "future": "Ausstellungsdatum darf nicht in der Zukunft liegen"
+                },
+                "expiryDate": {
+                    "required": "Ablaufdatum ist erforderlich",
+                    "past": "Ablaufdatum muss in der Zukunft liegen"
+                },
+                "issuingAuthority": {
+                    "required": "Ausstellende Behörde ist erforderlich",
+                    "maxlength": "Behörde darf maximal 100 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "issuingCountry": {
+                    "required": "Staat ist erforderlich",
+                    "maxlength": "Staatsname darf maximal 100 Zeichen lang sein"
+                }
+            }
+        },
+        "additionalGuests": {
+            "title": "Mitreisende",
+            "additionalGuest": "Mitreisende",
+            "firstName": "Vorname",
+            "lastName": "Familienname",
+            "birthDate": "Geburtsdatum",
+            "addGuest": "Mitreisenden hinzufügen",
+            "removeGuest": "Mitreisenden entfernen",
+            "errors": {
+                "firstName": {
+                    "required": "Vorname erforderlich",
+                    "maxlength": "Vorname darf maximal 50 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "lastName": {
+                    "required": "Familienname erforderlich",
+                    "maxlength": "Familienname darf maximal 50 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "birthDate": {
+                    "required": "Geburtsdatum erforderlich",
+                    "future": "Geburtsdatum darf nicht in der Zukunft liegen"
+                },
+                "maxGuests": "Es können maximal 10 Mitreisende hinzugefügt werden"
+            }
+        },
+        "datePickerPlaceholder" : "Datum auswählen",
+        "buttons": {
+            "next": "Weiter",
+            "previous": "Zurück",
+            "submit": "Abschicken"
         }
     }
 }

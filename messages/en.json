@@ -1,19 +1,195 @@
 {
-    "footer":{
-        "imprint":"Imprint",
-        "contact":"Contact",
-        "privacyPolicy":"Privacy Policy"
+    "footer": {
+        "imprint": "Imprint",
+        "contact": "Contact",
+        "privacyPolicy": "Privacy Policy"
     },
     "form": {
         "title": "Tenant Registration",
-        "pages": {
-            "bookingInfo": "Booking Information",
-            "bookingInfoSubtitle": "Please provide the booking information",
-            "personalData": "Persönliche Daten",
-            "address": "Adresse",
-            "travelDocument": "Reisedokument",
-            "additionalGuests": "Mitreisende"
+        "subtitle": "Mandatory field",
+        "bookingInfo": {
+            "title": "Booking Information",
+            "subtitle": "Contact the landlord if travel dates are incorrect!",
+            "pictures": {
+                "title": "Pictures",
+                "error": "No pictures available"
+            },
+            "accommodationDetails": {
+                "title": "Accommodation Information",
+                "name": "Name",
+                "description": "Description",
+                "address": {
+                    "title": "Address",
+                    "street": "Street",
+                    "houseNumber": "House Number",
+                    "postalCode": "Postal Code",
+                    "city": "City",
+                    "country": "Country"
+                }
+            },
+            "travelDates": {
+                "title": "Travel Dates",
+                "checkIn": "Check-In",
+                "expectedCheckOut": "Check-Out"
+            },
+            "error": "Not available!"
+        },
+        "personalData": {
+            "title": "Personal Data",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "gender": {
+                "title": "Gender",
+                "male": "Male",
+                "female": "Female",
+                "diverse": "Diverse",
+                "genderPlaceholder": "Select Gender"
+            },
+            "birthdate": "Date of Birth",
+            "errors": {
+                "firstName": {
+                    "required": "First name is required",
+                    "maxlength": "First name can be a maximum of 50 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "lastName": {
+                    "required": "Last name is required",
+                    "maxlength": "Last name can be a maximum of 50 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "gender": {
+                    "required": "Gender is required"
+                },
+                "birthdate": {
+                    "required": "Date of birth is required",
+                    "future": "Date of birth cannot be in the future",
+                    "ageMainTenant": "The main tenant must be at least 18 years old"
+                },
+                "default": "An error has occurred. Please check your input."
+            }
+        },
+
+        "address": {
+            "title": "Address",
+            "city": "City",
+            "postalCode": "Postal Code",
+            "street": "Street",
+            "houseNumber": "House Number",
+            "addressAdditional": "Address Additional Info",
+            "country": "Nationality",
+            "errors": {
+                "city": {
+                    "required": "City is required",
+                    "maxlength": "City name can be a maximum of 100 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "postalCode": {
+                    "required": "Postal code is required",
+                    "int": "Postal code must be an integer",
+                    "positive": "Postal code must be positive",
+                    "maxlength": "Postal code can have a maximum of 7 digits"
+                },
+                "street": {
+                    "required": "Street is required",
+                    "maxlength": "Street name can be a maximum of 100 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "houseNumber": {
+                    "required": "House number is required",
+                    "int": "House number must be an integer",
+                    "positive": "House number must be positive",
+                    "maxlength": "House number can have a maximum of 5 digits"
+                },
+                "addressAdditional": {
+                    "maxlength": "Additional address info can be a maximum of 100 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "country": {
+                    "required": "Country is required",
+                    "maxlength": "Country name can be a maximum of 100 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                }
+            }
+        },
+
+        "travelDocument": {
+            "title": "Travel Document",
+            "travelDocumentType": {
+                "title": "Travel Document Type",
+                "passport": "Passport",
+                "idCard": "ID Card",
+                "drivingLicense": "Driving License",
+                "placeholder": "Select Document Type"
+            },
+            "documentNr": "Document Number",
+            "issueDate": "Issue Date",
+            "expiryDate": "Expiry Date",
+            "issuingAuthority": "Issuing Authority",
+            "issuingCountry": {
+                "title": "Issuing Country",
+                "placeholder": "Select Country"
+            },
+            "errors": {
+                "travelDocumentType": {
+                    "required": "Travel document type is required"
+                },
+                "documentNr": {
+                    "required": "Document number is required",
+                    "maxlength": "Document number can be a maximum of 20 characters long",
+                    "alphanumeric": "Only letters and numbers are allowed"
+                },
+                "issueDate": {
+                    "required": "Issue date is required",
+                    "future": "Issue date cannot be in the future"
+                },
+                "expiryDate": {
+                    "required": "Expiry date is required",
+                    "past": "Expiry date must be in the future"
+                },
+                "issuingAuthority": {
+                    "required": "Issuing authority is required",
+                    "maxlength": "Authority name can be a maximum of 100 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "issuingCountry": {
+                    "required": "Country is required",
+                    "maxlength": "Country name can be a maximum of 100 characters long"
+                }
+            }
+        },
+
+        "additionalGuests": {
+            "title": "Additional Guests",
+            "additionalGuest": "Additional Guest",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "birthDate": "Date of Birth",
+            "addGuest": "Add Guest",
+            "removeGuest": "Remove Guest",
+            "errors": {
+                "firstName": {
+                    "required": "First name is required",
+                    "maxlength": "First name can be a maximum of 50 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "lastName": {
+                    "required": "Last name is required",
+                    "maxlength": "Last name can be a maximum of 50 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "birthDate": {
+                    "required": "Date of birth is required",
+                    "future": "Date of birth cannot be in the future"
+                },
+                "maxGuests": "A maximum of 10 additional guests can be added"
+            }
+        },
+        "datePickerPlaceholder" : "Select a Date",
+        "buttons": {
+            "next": "Next",
+            "previous": "Previous",
+            "submit": "Submit"
         }
+
     }
 }
-               
