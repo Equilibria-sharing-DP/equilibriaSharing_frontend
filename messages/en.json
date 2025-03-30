@@ -77,6 +77,9 @@
             "houseNumber": "House Number",
             "addressAdditional": "Address Additional Info",
             "country": "Nationality",
+            "countryOfOrigin": "Herkunftsland",
+            "nationality": "Staatsbürgerschaft",
+            "birthPlace": "Geburtsort",
             "errors": {
                 "city": {
                     "required": "City is required",
@@ -108,7 +111,23 @@
                     "required": "Country is required",
                     "maxlength": "Country name can be a maximum of 100 characters long",
                     "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "countryOfOrigin": {
+                    "required": "Country of origin is required",
+                    "maxlength": "Country of origin must be at most 100 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "nationality": {
+                    "required": "Nationality is required",
+                    "maxlength": "Nationality must be at most 100 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "birthPlace": {
+                    "required": "Place of birth is required",
+                    "maxlength": "Place of birth must be at most 100 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
                 }
+
             }
         },
 
@@ -181,6 +200,20 @@
                     "required": "Date of birth is required",
                     "future": "Date of birth cannot be in the future"
                 },
+                "gender": {
+                    "required": "Gender is required"
+                },
+                "countryOfOrigin": {
+                    "required": "Country of origin is required",
+                    "maxlength": "Country of origin must be at most 100 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+                "nationality": {
+                    "required": "Nationality is required",
+                    "maxlength": "Nationality must be at most 100 characters long",
+                    "forbiddenCharacters": "Only letters, spaces, hyphens, and apostrophes are allowed."
+                },
+
                 "maxGuests": "A maximum of 10 additional guests can be added"
             }
         },

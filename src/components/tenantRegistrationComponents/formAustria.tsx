@@ -314,7 +314,7 @@ export function FormAustria({ initialAccommodationDetails, urlParams }: FormAust
             });
 
             if (!response.ok) {
-                console.error(`Fehler: ${response.status} ${response.statusText}`);
+                router.push("/error?code=500")
             }
 
             const result = await response.json();
@@ -753,7 +753,7 @@ export function FormAustria({ initialAccommodationDetails, urlParams }: FormAust
                     ))}
                 </div>
 
-                {fields.length < 10 && (
+                {accommodationDetails && fields.length < accommodationDetails.maxGuests && (
                     <div className="mt-6 flex justify-center">
                         <Button
                             type="button"

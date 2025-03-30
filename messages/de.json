@@ -80,9 +80,6 @@
             "countryOfOrigin": "Herkunftsland",
             "nationality": "Staatsbürgerschaft",
             "birthPlace": "Geburtsort",
-            "countryOfOriginPlaceholder": "Herkunftsland auswählen",
-            "nationalityPlaceholder": "Staatsbürgerschaft auswählen",
-            "birthPlacePlaceholder": "Geburtsort eingeben",
             "errors": {
                 "city": {
                     "required": "Stadt ist erforderlich",
@@ -199,6 +196,19 @@
                 "birthDate": {
                     "required": "Geburtsdatum erforderlich",
                     "future": "Geburtsdatum darf nicht in der Zukunft liegen"
+                },
+                "gender":{
+                    "required": "Geschlecht ist erforderlich"
+                },
+                "countryOfOrigin": {
+                    "required": "Herkunftsland ist erforderlich",
+                    "maxlength": "Herkunftsland darf maximal 100 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "nationality": {
+                    "required": "Staatsbürgerschaft ist erforderlich",
+                    "maxlength": "Staatsbürgerschaft darf maximal 100 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
                 },
                 "maxGuests": "Es können maximal 10 Mitreisende hinzugefügt werden"
             }

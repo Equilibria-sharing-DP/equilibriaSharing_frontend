@@ -30,7 +30,6 @@ import {useTranslations} from 'next-intl';
 const genderOptions = [
     { value: "MALE", label: "personalData.gender.male" },
     { value: "FEMALE", label: "personalData.gender.female" },
-    { value: "OTHER", label: "personalData.gender.diverse" },
 ];
 
 const documentTypes = [
@@ -143,15 +142,27 @@ const formSchema = z.object({
                 }),
 
             lastName: z.string({
-                    required_error: "additionalGuests.errors.required",
-                }).max(50, "additionalGuests.errors.maxlength")
+                    required_error: "additionalGuests.errors.lastName.required",
+                }).max(50, "additionalGuests.errors.lastName.maxlength")
                 .refine((value) => nameRegex.test(value), {
-                    message: "additionalGuests.errors.forbiddenCharacters",
+                    message: "additionalGuests.errors.lastName.forbiddenCharacters",
                 }),
+
+            gender: z.enum(["MALE", "FEMALE", "OTHER"], {
+                required_error: "additionalGuests.errors.gender.required",
+            }),
 
             birthDate: z.date({
                 required_error: "additionalGuests.errors.birthDate.required",
             }).refine(date => date <= new Date(), "additionalGuests.errors.birthDate.future"),
+
+            countryOfOrigin: z.string({
+                required_error: "additionalGuests.errors.countryOfOrigin.required",
+            }).max(100, "additionalGuests.errors.countryOfOrigin.maxlength"),
+            
+            nationality: z.string({
+                required_error: "additionalGuests.errors.countryOfOrigin.required",
+            }).max(100, "additionalGuests.errors.countryOfOrigin.maxlength"),
         })
     ).max(10, "additionalGuests.errors.maxGuests"),
 
@@ -199,7 +210,7 @@ export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps)
             accommodationId: urlParams?.accommodationId ?? undefined,
             checkIn: urlParams?.checkIn ?? undefined,
             expectedCheckOut: urlParams?.expectedCheckOut ?? undefined,
-            additionalGuests: [],
+            additionalGuests: []
         },
     });
 
@@ -212,12 +223,9 @@ export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps)
         const fieldNames = [
             currentPage === 1 && ["mainTraveler.firstName", "mainTraveler.lastName", "mainTraveler.gender", "mainTraveler.birthDate"],
             currentPage === 2 && [
-                "mainTraveler.city",
-                "mainTraveler.postalCode",
-                "mainTraveler.street",
-                "mainTraveler.addressAdditional",
-                "mainTraveler.houseNumber",
-                "mainTraveler.country",
+                "mainTraveler.countryOfOrigin",
+                "mainTraveler.nationality",
+                "mainTraveler.birthPlace",
             ],
             currentPage === 3 && [
                 "mainTraveler.travelDocumentType",
@@ -231,6 +239,9 @@ export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps)
                 `additionalGuests.${index}.firstName`,
                 `additionalGuests.${index}.lastName`,
                 `additionalGuests.${index}.birthDate`,
+                `additionalGuests.${index}.gender`,
+                `additionalGuests.${index}.countryOfOrigin`,
+                `additionalGuests.${index}.nationality`,
             ]).flat(),
         ].filter(Boolean).flat();
 
@@ -276,7 +287,7 @@ export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps)
             });
 
             if (!response.ok) {
-                console.error(`Fehler: ${response.status} ${response.statusText}`);
+                router.push("/error?code=500")
             }
 
             const result = await response.json();
@@ -429,7 +440,6 @@ export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps)
                             <FormLabel>{t('address.countryOfOrigin')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
                                 <CountryDropdown
-                                    placeholder={t('address.countryOfOriginPlaceholder')}
                                     onChange={field.onChange}
                                     error={!!fieldState.error}
                                     value={field.value}
@@ -447,7 +457,6 @@ export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps)
                             <FormLabel>{t('address.nationality')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
                                 <CountryDropdown
-                                    placeholder={t('address.nationalityPlaceholder')}
                                     onChange={field.onChange}
                                     error={!!fieldState.error}
                                     value={field.value}
@@ -457,7 +466,7 @@ export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps)
                         </FormItem>
                     )}
                 />
-                {form.watch('mainTraveler.nationality') === 'Italy' && (
+                {form.watch('mainTraveler.nationality') === 'ITA' && (
                     <FormField
                         control={form.control}
                         name="mainTraveler.birthPlace"
@@ -465,7 +474,7 @@ export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps)
                             <FormItem>
                                 <FormLabel>{t('address.birthPlace')}<span className="text-red-500 ml-1">*</span></FormLabel>
                                 <FormControl>
-                                    <Input {...field} error={!!fieldState.error} placeholder={t('address.birthPlacePlaceholder')} />
+                                    <Input {...field} error={!!fieldState.error} />
                                 </FormControl>
                                 <FormMessage shouldTranslate={true} />
                             </FormItem>
@@ -636,6 +645,33 @@ export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps)
 
                                 <FormField
                                     control={form.control}
+                                    name={`additionalGuests.${index}.gender`}
+                                    render={({ field, fieldState }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                {t('personalData.gender.title')}<span className="text-red-500 ml-1">*</span>
+                                            </FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger error={!!fieldState.error} placeholder={t('personalData.gender.genderPlaceholder')} value={field.value}>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {genderOptions.map((option) => (
+                                                        <SelectItem key={option.value} value={option.value}>
+                                                            {t(option.label)}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage shouldTranslate={true} />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
                                     name={`additionalGuests.${index}.birthDate`}
                                     render={({ field, fieldState }) => (
                                         <FormItem>
@@ -649,6 +685,42 @@ export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps)
                                                 placeholder={t('datePickerPlaceholder')}
                                             />
                                             <FormMessage shouldTranslate={true}/>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name={`additionalGuests.${index}.countryOfOrigin`}
+                                    render={({ field, fieldState }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('address.countryOfOrigin')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                                            <FormControl>
+                                                <CountryDropdown
+                                                    onChange={field.onChange}
+                                                    error={!!fieldState.error}
+                                                    value={field.value}
+                                                />
+                                            </FormControl>
+                                            <FormMessage shouldTranslate={true} />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name={`additionalGuests.${index}.nationality`}
+                                    render={({ field, fieldState }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('address.nationality')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                                            <FormControl>
+                                                <CountryDropdown
+                                                    onChange={field.onChange}
+                                                    error={!!fieldState.error}
+                                                    value={field.value}
+                                                />
+                                            </FormControl>
+                                            <FormMessage shouldTranslate={true} />
                                         </FormItem>
                                     )}
                                 />
@@ -668,12 +740,12 @@ export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps)
                     ))}
                 </div>
 
-                {fields.length < 10 && (
+                {accommodationDetails && fields.length < accommodationDetails.maxGuests && (
                     <div className="mt-6 flex justify-center">
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => append({firstName: '', lastName: '', birthDate: new Date() })}
+                            onClick={() => append({firstName: '', lastName: '', birthDate: new Date(), gender: "MALE", nationality: '', countryOfOrigin: '' })}
                         >   
                             {t('additionalGuests.addGuest')}
                         </Button>
