@@ -77,6 +77,12 @@
             "houseNumber": "Hausnummer",
             "addressAdditional": "Adresszusatz",
             "country": "Staatsangehörigkeit",
+            "countryOfOrigin": "Herkunftsland",
+            "nationality": "Staatsbürgerschaft",
+            "birthPlace": "Geburtsort",
+            "countryOfOriginPlaceholder": "Herkunftsland auswählen",
+            "nationalityPlaceholder": "Staatsbürgerschaft auswählen",
+            "birthPlacePlaceholder": "Geburtsort eingeben",
             "errors": {
                 "city": {
                     "required": "Stadt ist erforderlich",
@@ -107,6 +113,21 @@
                 "country": {
                     "required": "Land ist erforderlich",
                     "maxlength": "Landesname darf maximal 100 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "countryOfOrigin": {
+                    "required": "Herkunftsland ist erforderlich",
+                    "maxlength": "Herkunftsland darf maximal 100 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "nationality": {
+                    "required": "Staatsbürgerschaft ist erforderlich",
+                    "maxlength": "Staatsbürgerschaft darf maximal 100 Zeichen lang sein",
+                    "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
+                },
+                "birthPlace": {
+                    "required": "Geburtsort ist erforderlich",
+                    "maxlength": "Geburtsort darf maximal 100 Zeichen lang sein",
                     "forbiddenCharacters": "Nur Buchstaben, Leerzeichen, Bindestrich und Apostroph sind erlaubt."
                 }
             }

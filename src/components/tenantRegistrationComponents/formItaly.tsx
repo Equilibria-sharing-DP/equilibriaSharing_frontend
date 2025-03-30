@@ -27,7 +27,6 @@ import { CountryDropdown } from "@/components/country-dropdown-menu";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import {useTranslations} from 'next-intl';
-
 const genderOptions = [
     { value: "MALE", label: "personalData.gender.male" },
     { value: "FEMALE", label: "personalData.gender.female" },
@@ -71,68 +70,31 @@ const formSchema = z.object({
         }),
 
         birthDate: z.date({
-                required_error: "personalData.errors.birthdate.required",
-            })
-            .refine(date => date <= new Date(), "personalData.errors.birthdate.future")
-            .refine(isAdult, "personalData.errors.birthdate.ageMainTenant"),
+            required_error: "personalData.errors.birthdate.required",
+        })
+        .refine(date => date <= new Date(), "personalData.errors.birthdate.future")
+        .refine(isAdult, "personalData.errors.birthdate.ageMainTenant"),
 
-        city: z.string({
-                required_error: "address.errors.city.required",
-            }).max(100, "address.errors.city.maxlength")
-            .refine((value) => nameRegex.test(value), {
-                message: "address.errors.city.forbiddenCharacters",
-            }),
-
-        postalCode: z.preprocess(
-            (val) => {
-                if (val === '' || val === undefined || val === null) {
-                    return undefined; // Leere Eingaben bleiben undefined
-                }
-                return Number(val); // Nur gültige Eingaben werden in Zahlen umgewandelt
-            },
-            z.number({
-                required_error: "address.errors.postalCode.required",
-            })
-                .int("address.errors.postalCode.int")
-                .positive("address.errors.postalCode.positive")
-                .max(9999999, "address.errors.postalCode.maxlength")
-        ),
-
-        street: z.string({
-                required_error: "address.errors.street.required",
-            }).max(100, "address.errors.street.maxlength")
-            .refine((value) => nameRegex.test(value), {
-                message: "address.errors.street.forbiddenCharacters",
-            }),
-
-        houseNumber: z.preprocess(
-            (val) => {
-                if (val === '' || val === undefined || val === null) {
-                    return undefined; // Leere Eingaben bleiben undefined
-                }
-                return Number(val); // Nur gültige Eingaben werden in Zahlen umgewandelt
-            },
-            z.number({
-                required_error: "address.errors.houseNumber.required",
-            })
-                .int("address.errors.houseNumber.int")
-                .positive("address.errors.houseNumber.positive")
-                .max(99999, "address.errors.houseNumber.maxlength")
-        ),
-
-        country: z.string({
-                required_error: "address.errors.country.required",
-            }).max(100, "address.errors.country.maxlength")
-            .refine((value) => nameRegex.test(value), {
-                message: "address.errors.country.forbiddenCharacters",
-            }),
-
-        addressAdditional: z.string()
-            .max(100, "address.errors.maxlength")
-            .refine((value) => nameRegex.test(value), {
-                message: "address.errors.forbiddenCharacters",
-            })
-            .optional(),
+        countryOfOrigin: z.string({
+            required_error: "address.errors.countryOfOrigin.required",
+        }).max(100, "address.errors.countryOfOrigin.maxlength")
+        .refine((value) => nameRegex.test(value), {
+            message: "address.errors.countryOfOrigin.forbiddenCharacters",
+        }),
+        
+        nationality: z.string({
+            required_error: "address.errors.nationality.required",
+        }).max(100, "address.errors.nationality.maxlength")
+        .refine((value) => nameRegex.test(value), {
+            message: "address.errors.nationality.forbiddenCharacters",
+        }),
+        
+        birthPlace: z.string({
+            required_error: "address.errors.birthPlace.required",
+        }).max(100, "address.errors.birthPlace.maxlength")
+        .refine((value) => nameRegex.test(value), {
+            message: "address.errors.birthPlace.forbiddenCharacters",
+        }).optional(),
 
         travelDocumentType: z.enum(["PASSPORT", "ID_CARD", "DRIVING_LICENCE"], {
             required_error: "travelDocument.errors.travelDocumentType.required",
@@ -217,12 +179,12 @@ type AccommodationDetails = {
 };
 
 // Definiere die Props-Schnittstelle
-interface FormAustriaProps {
+interface FormProps {
     initialAccommodationDetails: AccommodationDetails;
     urlParams: Record<string, any>; // Typ für URL-Parameter
 }
 
-export function FormAustria({ initialAccommodationDetails, urlParams }: FormAustriaProps) {
+export function FormItaly({ initialAccommodationDetails, urlParams }: FormProps) {
     const t = useTranslations('form');
 
     const router = useRouter();
@@ -329,7 +291,7 @@ export function FormAustria({ initialAccommodationDetails, urlParams }: FormAust
     const pages = [
         <div key="page0">
             <div className="mb-6">
-                <h3 className="text-lg font-semibold">{t('bookingInfo.title')} Austria</h3>
+                <h3 className="text-lg font-semibold">{t('bookingInfo.title')}</h3>
                 <p className="text-xs text-gray-500">{t('bookingInfo.subtitle')}</p>
                 
                 {/* Bilder */}
@@ -461,105 +423,58 @@ export function FormAustria({ initialAccommodationDetails, urlParams }: FormAust
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
-                    name="mainTraveler.city"
-                    render={({field, fieldState}) => (
+                    name="mainTraveler.countryOfOrigin"
+                    render={({ field, fieldState }) => (
                         <FormItem>
-                            <FormLabel>{t('address.city')}<span className="text-red-500 ml-1">*</span></FormLabel>
-                            <FormControl>
-                                <Input {...field} error={!!fieldState.error}/>
-                            </FormControl>
-                            <FormMessage shouldTranslate={true}/>
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="mainTraveler.postalCode"
-                    render={({field, fieldState}) => (
-                        <FormItem>
-                            <FormLabel>{t('address.postalCode')}<span className="text-red-500 ml-1">*</span></FormLabel>
-                            <FormControl>
-                                <Input
-                                    type="number"
-                                    {...field}
-                                    inputMode="numeric"
-                                    pattern="\d+"
-                                    onChange={(e) => {
-                                        const value = e.target.value.replace(/\D/g, '');
-                                        field.onChange(Number(value));
-                                    }}
-                                    error={!!fieldState.error}
-                                />
-                            </FormControl>
-                            <FormMessage shouldTranslate={true}/>
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="mainTraveler.street"
-                    render={({field, fieldState}) => (
-                        <FormItem>
-                            <FormLabel>{t('address.street')}<span className="text-red-500 ml-1">*</span></FormLabel>
-                            <FormControl>
-                                <Input {...field} error={!!fieldState.error}/>
-                            </FormControl>
-                            <FormMessage shouldTranslate={true}/>
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="mainTraveler.houseNumber"
-                    render={({field, fieldState}) => (
-                        <FormItem>
-                            <FormLabel>{t('address.houseNumber')}<span className="text-red-500 ml-1">*</span></FormLabel>
-                            <FormControl>
-                                <Input
-                                    type="number"
-                                    {...field}
-                                    onChange={(e) => field.onChange(Number(e.target.value))}
-                                    error={!!fieldState.error}
-                                />
-                            </FormControl>
-                            <FormMessage shouldTranslate={true}/>
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="mainTraveler.addressAdditional"
-                    render={({field, fieldState}) => (
-                        <FormItem>
-                            <FormLabel>{t('address.addressAdditional')}</FormLabel>
-                            <FormControl>
-                                <Input {...field} error={!!fieldState.error}/>
-                            </FormControl>
-                            <FormMessage shouldTranslate={true}/>
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="mainTraveler.country"
-                    render={({field, fieldState}) => (
-                        <FormItem>
-                            <FormLabel>{t('address.country')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormLabel>{t('address.countryOfOrigin')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
                                 <CountryDropdown
-                                    placeholder="Land auswählen"
+                                    placeholder={t('address.countryOfOriginPlaceholder')}
                                     onChange={field.onChange}
                                     error={!!fieldState.error}
                                     value={field.value}
                                 />
                             </FormControl>
-                            <FormMessage shouldTranslate={true}/>
+                            <FormMessage shouldTranslate={true} />
                         </FormItem>
                     )}
                 />
+                <FormField
+                    control={form.control}
+                    name="mainTraveler.nationality"
+                    render={({ field, fieldState }) => (
+                        <FormItem>
+                            <FormLabel>{t('address.nationality')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormControl>
+                                <CountryDropdown
+                                    placeholder={t('address.nationalityPlaceholder')}
+                                    onChange={field.onChange}
+                                    error={!!fieldState.error}
+                                    value={field.value}
+                                />
+                            </FormControl>
+                            <FormMessage shouldTranslate={true} />
+                        </FormItem>
+                    )}
+                />
+                {form.watch('mainTraveler.nationality') === 'Italy' && (
+                    <FormField
+                        control={form.control}
+                        name="mainTraveler.birthPlace"
+                        render={({ field, fieldState }) => (
+                            <FormItem>
+                                <FormLabel>{t('address.birthPlace')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                                <FormControl>
+                                    <Input {...field} error={!!fieldState.error} placeholder={t('address.birthPlacePlaceholder')} />
+                                </FormControl>
+                                <FormMessage shouldTranslate={true} />
+                            </FormItem>
+                        )}
+                    />
+                )}
             </div>
         </div>,
-    
+
         <div key="page3">
             <h3 className="text-lg font-semibold">{t('travelDocument.title')}<span className="text-red-500 ml-1">*</span></h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
