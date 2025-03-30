@@ -217,5 +217,10 @@
             }
         },
         "goBackButton" : "Zurück"
+    },
+    "registrationSuccess": {
+        "title": "Registrierung erfolgreich!",
+        "message": "Vielen Dank für Ihre Registrierung. Sie können dieses Fenster nun schließen!"
     }
+    
 }

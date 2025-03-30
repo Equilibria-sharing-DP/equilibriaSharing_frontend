@@ -365,17 +365,17 @@ export function FormAustria() {
 
 
     const pages = [
-        <div key="page0">
+        <div key="page0" className="px-4 sm:px-6 lg:px-8">
             <div className="mb-6">
                 <h3 className="text-lg font-semibold">{t('bookingInfo.title')}</h3>
                 <p className="text-xs text-gray-500">{t('bookingInfo.subtitle')}</p>
                 
                 {/* Bilder */}
                 <h4 className="text-base font-semibold mt-4">{t('bookingInfo.pictures.title')}</h4>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {(accommodationDetails?.pictureUrls ?? []).slice(0, 3).length > 0 ? (
                         (accommodationDetails?.pictureUrls ?? []).slice(0, 3).map((url, index) => (
-                            <div key={index} className="relative w-full h-32 rounded-lg overflow-hidden shadow-sm">
+                            <div key={index} className="relative w-full h-32 sm:h-40 lg:h-48 rounded-lg overflow-hidden shadow-sm">
                                 <Image
                                     src={url}
                                     alt={`Bild ${index + 1}`}
@@ -394,10 +394,10 @@ export function FormAustria() {
                 
                 {/* Unterkunftsinfos */}
                 <h3 className="text-base font-semibold">{t('bookingInfo.accommodationDetails.title')}</h3>
-                <div className="gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     <p><strong>{t('bookingInfo.accommodationDetails.name')}:</strong> {accommodationDetails?.name ?? t('bookingInfo.error')}</p>
                     <p><strong>{t('bookingInfo.accommodationDetails.description')}:</strong> {accommodationDetails?.description ?? t('bookingInfo.error')}</p>
-                    <p className="col-span-2">
+                    <p className="col-span-1 sm:col-span-2">
                         <strong>{t('bookingInfo.accommodationDetails.title')}:</strong> {accommodationDetails
                             ? `${accommodationDetails.address.street} ${accommodationDetails.address.houseNumber}, 
                                 ${accommodationDetails.address.postalCode} ${accommodationDetails.address.city}, 
@@ -410,45 +410,45 @@ export function FormAustria() {
                 
                 {/* Reisedaten */}
                 <h3 className="text-base font-semibold">{t('bookingInfo.travelDates.title')}</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     <p><strong>{t('bookingInfo.travelDates.checkIn')}:</strong> {urlParams?.checkIn?.toLocaleDateString() ?? t('bookingInfo.error')}</p>
                     <p><strong>{t('bookingInfo.travelDates.expectedCheckOut')}:</strong> {urlParams?.expectedCheckOut?.toLocaleDateString() ?? t('bookingInfo.error')}</p>
                 </div>
             </div>
         </div>,
-        <div key="page1">
+        <div key="page1" className="px-4 sm:px-6 lg:px-8">
             <h3 className="text-lg font-semibold">{t('personalData.title')}</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
                     name="mainTraveler.firstName"
-                    render={({field, fieldState}) => (
+                    render={({ field, fieldState }) => (
                         <FormItem>
                             <FormLabel>
-                            {t('personalData.firstName')}<span className="text-red-500 ml-1">*</span>
+                                {t('personalData.firstName')}<span className="text-red-500 ml-1">*</span>
                             </FormLabel>
                             <FormControl>
-                                <Input {...field} error={!!fieldState.error}/>
+                                <Input {...field} error={!!fieldState.error} />
                             </FormControl>
-                            <FormMessage shouldTranslate={true}/>
-
+                            <FormMessage shouldTranslate={true} />
                         </FormItem>
                     )}
                 />
-
+        
                 <FormField
                     control={form.control}
                     name="mainTraveler.lastName"
-                    render={({field, fieldState}) => (
+                    render={({ field, fieldState }) => (
                         <FormItem>
                             <FormLabel>{t('personalData.lastName')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
-                                <Input {...field} error={!!fieldState.error}/>
+                                <Input {...field} error={!!fieldState.error} />
                             </FormControl>
-                            <FormMessage shouldTranslate={true}/>
+                            <FormMessage shouldTranslate={true} />
                         </FormItem>
                     )}
                 />
+                
                 <FormField
                     control={form.control}
                     name="mainTraveler.gender"
@@ -460,7 +460,7 @@ export function FormAustria() {
                             <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
                                     <SelectTrigger error={!!fieldState.error} placeholder={t('personalData.gender.genderPlaceholder')} value={field.value}>
-                                        <SelectValue/>
+                                        <SelectValue />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
@@ -471,15 +471,15 @@ export function FormAustria() {
                                     ))}
                                 </SelectContent>
                             </Select>
-                            <FormMessage shouldTranslate={true}/>
+                            <FormMessage shouldTranslate={true} />
                         </FormItem>
                     )}
                 />
-
+        
                 <FormField
                     control={form.control}
                     name="mainTraveler.birthDate"
-                    render={({field, fieldState}) => (
+                    render={({ field, fieldState }) => (
                         <FormItem className="flex-1">
                             <FormLabel>{t('personalData.birthdate')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <DatePickerYear
@@ -488,7 +488,7 @@ export function FormAustria() {
                                 error={!!fieldState.error}
                                 placeholder={t('datePickerPlaceholder')}
                             />
-                            <FormMessage shouldTranslate={true}/>
+                            <FormMessage shouldTranslate={true} />
                         </FormItem>
                     )}
                 />
@@ -496,7 +496,7 @@ export function FormAustria() {
         </div>,
         <div key="page2">
             <h3 className="text-lg font-semibold">{t('address.title')}</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
                     name="mainTraveler.city"
@@ -533,52 +533,50 @@ export function FormAustria() {
                         </FormItem>
                     )}
                 />
-                <div className="grid grid-cols-3 gap-4 col-span-2">
-                    <FormField
-                        control={form.control}
-                        name="mainTraveler.street"
-                        render={({field, fieldState}) => (
-                            <FormItem>
-                                <FormLabel>{t('address.street')}<span className="text-red-500 ml-1">*</span></FormLabel>
-                                <FormControl>
-                                    <Input {...field} error={!!fieldState.error}/>
-                                </FormControl>
-                                <FormMessage shouldTranslate={true}/>
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="mainTraveler.houseNumber"
-                        render={({field, fieldState}) => (
-                            <FormItem>
-                                <FormLabel>{t('address.houseNumber')}<span className="text-red-500 ml-1">*</span></FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type="number"
-                                        {...field}
-                                        onChange={(e) => field.onChange(Number(e.target.value))}
-                                        error={!!fieldState.error}
-                                    />
-                                </FormControl>
-                                <FormMessage shouldTranslate={true}/>
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="mainTraveler.addressAdditional"
-                        render={({field, fieldState}) => (
-                            <FormItem>
-                                <FormLabel>{t('address.addressAdditional')}</FormLabel>
-                                <FormControl>
-                                    <Input {...field} error={!!fieldState.error}/>
-                                </FormControl>
-                                <FormMessage shouldTranslate={true}/>
-                            </FormItem>
-                        )}
-                    />
-                </div>
+                <FormField
+                    control={form.control}
+                    name="mainTraveler.street"
+                    render={({field, fieldState}) => (
+                        <FormItem>
+                            <FormLabel>{t('address.street')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormControl>
+                                <Input {...field} error={!!fieldState.error}/>
+                            </FormControl>
+                            <FormMessage shouldTranslate={true}/>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="mainTraveler.houseNumber"
+                    render={({field, fieldState}) => (
+                        <FormItem>
+                            <FormLabel>{t('address.houseNumber')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormControl>
+                                <Input
+                                    type="number"
+                                    {...field}
+                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                    error={!!fieldState.error}
+                                />
+                            </FormControl>
+                            <FormMessage shouldTranslate={true}/>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="mainTraveler.addressAdditional"
+                    render={({field, fieldState}) => (
+                        <FormItem>
+                            <FormLabel>{t('address.addressAdditional')}</FormLabel>
+                            <FormControl>
+                                <Input {...field} error={!!fieldState.error}/>
+                            </FormControl>
+                            <FormMessage shouldTranslate={true}/>
+                        </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="mainTraveler.country"
@@ -599,9 +597,10 @@ export function FormAustria() {
                 />
             </div>
         </div>,
+    
         <div key="page3">
             <h3 className="text-lg font-semibold">{t('travelDocument.title')}<span className="text-red-500 ml-1">*</span></h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                         control={form.control}
                         name="mainTraveler.travelDocumentType"
@@ -612,14 +611,14 @@ export function FormAustria() {
                                 </FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
-                                        <SelectTrigger error={!!fieldState.error} placeholder="{t('travelDocument.travelDocumentType.placeholder')}" value={field.value}>
+                                        <SelectTrigger error={!!fieldState.error} placeholder={t('travelDocument.travelDocumentType.placeholder')} value={field.value}>
                                             <SelectValue/>
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
                                         {documentTypes.map((option) => (
                                             <SelectItem key={option.value} value={option.value}>
-                                                {option.label}
+                                                {t(option.label)}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -633,7 +632,7 @@ export function FormAustria() {
                     name="mainTraveler.documentNr"
                     render={({field, fieldState}) => (
                         <FormItem>
-                            <FormLabel>{t('travelDocument.travelDocumentType.documentNr')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormLabel>{t('travelDocument.documentNr')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
                                 <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
@@ -646,7 +645,7 @@ export function FormAustria() {
                     name="mainTraveler.issueDate"
                     render={({field, fieldState}) => (
                         <FormItem>
-                            <FormLabel>{t('travelDocument.travelDocumentType.issueDate')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormLabel>{t('travelDocument.issueDate')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <DatePickerYear
                                 date={field.value}
                                 setDate={field.onChange}
@@ -662,7 +661,7 @@ export function FormAustria() {
                     name="mainTraveler.expiryDate"
                     render={({field, fieldState}) => (
                         <FormItem>
-                            <FormLabel>{t('travelDocument.travelDocumentType.expiryDate')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormLabel>{t('travelDocument.expiryDate')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <DatePickerYear
                                 date={field.value}
                                 setDate={field.onChange}
@@ -678,7 +677,7 @@ export function FormAustria() {
                     name="mainTraveler.issuingAuthority"
                     render={({field, fieldState}) => (
                         <FormItem>
-                            <FormLabel>{t('travelDocument.travelDocumentType.issuingAuthority')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormLabel>{t('travelDocument.issuingAuthority')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <FormControl>
                                 <Input {...field} error={!!fieldState.error}/>
                             </FormControl>
@@ -691,9 +690,9 @@ export function FormAustria() {
                     name="mainTraveler.issuingCountry"
                     render={({field, fieldState}) => (
                         <FormItem>
-                            <FormLabel>{t('travelDocument.travelDocumentType.issuingCountry.title')}<span className="text-red-500 ml-1">*</span></FormLabel>
+                            <FormLabel>{t('travelDocument.issuingCountry.title')}<span className="text-red-500 ml-1">*</span></FormLabel>
                             <CountryDropdown
-                                placeholder="{t('travelDocument.travelDocumentType.issuingCountry.placeholder')}"
+                                placeholder={t('travelDocument.issuingCountry.placeholder')}
                                 onChange={field.onChange}
                                 value={field.value}
                                 error={!!fieldState.error}
@@ -730,7 +729,6 @@ export function FormAustria() {
                                             <FormControl>
                                                 <Input
                                                     {...field}
-                                                    placeholder="Vorname eingeben"
                                                     error={!!fieldState.error}
                                                 />
                                             </FormControl>

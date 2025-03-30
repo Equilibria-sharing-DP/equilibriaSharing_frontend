@@ -10,7 +10,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
+import {useTranslations} from 'next-intl';
 interface DatePickerYearProps {
     date: Date | undefined
     setDate: (date: Date | undefined) => void
@@ -19,6 +19,7 @@ interface DatePickerYearProps {
 }
 
 export function DatePickerYear({ date, setDate, error, placeholder = "Datum auswählen" }: DatePickerYearProps) {
+    const t = useTranslations('form');
     const [month, setMonth] = React.useState<number>(date instanceof Date ? date.getMonth() : new Date().getMonth())
     const [year, setYear] = React.useState<number>(date instanceof Date ? date.getFullYear() : new Date().getFullYear())
 
