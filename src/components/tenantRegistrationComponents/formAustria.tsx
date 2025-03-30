@@ -365,7 +365,7 @@ export function FormAustria() {
 
 
     const pages = [
-        <div key="page0" className="px-4 sm:px-6 lg:px-8">
+        <div key="page0">
             <div className="mb-6">
                 <h3 className="text-lg font-semibold">{t('bookingInfo.title')}</h3>
                 <p className="text-xs text-gray-500">{t('bookingInfo.subtitle')}</p>
@@ -416,7 +416,7 @@ export function FormAustria() {
                 </div>
             </div>
         </div>,
-        <div key="page1" className="px-4 sm:px-6 lg:px-8">
+        <div key="page1">
             <h3 className="text-lg font-semibold">{t('personalData.title')}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
