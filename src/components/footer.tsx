@@ -32,7 +32,7 @@ export function Footer() {
                     </Button>
                     <Button asChild variant="link"
                             className="text-black dark:text-white hover:text-black ">
-                        <Link href="/tenantRegistration/datenschutz">{t('privacyPolicy')}</Link>
+                        <Link href="https://equilibria.at/datenschutz/s">{t('privacyPolicy')}</Link>
                     </Button>
                 </div>
 
