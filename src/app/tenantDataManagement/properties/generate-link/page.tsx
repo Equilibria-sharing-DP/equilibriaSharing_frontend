@@ -4,20 +4,43 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Navbar } from "@/components/tenantDataManagementComponents/navbar"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Copy, Check } from "lucide-react"
-import propertiesData from "@/app/tenantDataManagement/data/properties.json"
+import { ArrowLeft, Copy, Check, Loader2 } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { accommodationService } from '@/services/accommodationService'
+
+interface Accommodation {
+  id: number;
+  name: string;
+  type: string;
+  description: string;
+  maxGuests: number;
+  pricePerNight: number;
+  pictureUrls: string[];
+  street: string;
+  houseNumber: string;
+  postalCode: string;
+  city: string;
+  country: string;
+  addressAdditional?: string;
+}
 
 export default function GenerateLinkPage() {
   const router = useRouter()
-  const [selectedProperty, setSelectedProperty] = useState("")
+  const [selectedAccommodation, setSelectedAccommodation] = useState<string>("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
-  const [generatedLink, setGeneratedLink] = useState("")
+  const [generatedLink, setGeneratedLink] = useState<string>("")
+  const [accommodations, setAccommodations] = useState<Accommodation[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    loadAccommodations()
+  }, [])
 
   // Reset copied state after 2 seconds
   useEffect(() => {
@@ -29,15 +52,28 @@ export default function GenerateLinkPage() {
     }
   }, [copied])
 
+  const loadAccommodations = async () => {
+    try {
+      const data = await accommodationService.getAllAccommodations()
+      setAccommodations(data)
+      setError(null)
+    } catch (err) {
+      setError('Fehler beim Laden der Immobilien')
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleGenerateLink = () => {
-    if (!selectedProperty || !startDate || !endDate) {
+    if (!selectedAccommodation || !startDate || !endDate) {
       alert("Bitte wählen Sie eine Immobilie und einen Zeitraum aus")
       return
     }
 
     // Create an object with the selected data
     const linkData = {
-      propertyId: selectedProperty,
+      accommodationId: selectedAccommodation,
       startDate,
       endDate,
     }
@@ -48,16 +84,32 @@ export default function GenerateLinkPage() {
 
     // Create a shareable link
     const baseUrl = window.location.origin
-    const fullLink = `${baseUrl}/booking?data=${base64String}`
-
-    setGeneratedLink(fullLink)
+    const registrationLink = `${baseUrl}/tenantRegistration?data=${base64String}`
+    setGeneratedLink(registrationLink)
   }
 
   const handleCopyLink = () => {
-    if (generatedLink) {
-      navigator.clipboard.writeText(generatedLink)
-      setCopied(true)
-    }
+    navigator.clipboard.writeText(generatedLink)
+    setCopied(true)
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center p-4">
+        <p className="text-red-500">{error}</p>
+        <Button onClick={loadAccommodations} className="mt-4">
+          Erneut versuchen
+        </Button>
+      </div>
+    )
   }
 
   return (
@@ -83,15 +135,21 @@ export default function GenerateLinkPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="property">Immobilie auswählen</Label>
-              <Select value={selectedProperty} onValueChange={setSelectedProperty}>
-                <SelectTrigger id="property">
+              <Label htmlFor="accommodation">Immobilie auswählen</Label>
+              <Select
+                value={selectedAccommodation}
+                onValueChange={setSelectedAccommodation}
+              >
+                <SelectTrigger>
                   <SelectValue placeholder="Wählen Sie eine Immobilie" />
                 </SelectTrigger>
                 <SelectContent>
-                  {propertiesData.map((property) => (
-                    <SelectItem key={property.id} value={property.id.toString()}>
-                      {property.name} - {property.address.city}, {property.address.country}
+                  {accommodations.map((accommodation) => (
+                    <SelectItem 
+                      key={accommodation.id} 
+                      value={accommodation.id.toString()}
+                    >
+                      {accommodation.name} - {accommodation.street} {accommodation.houseNumber}, {accommodation.city}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -106,6 +164,7 @@ export default function GenerateLinkPage() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
                   className="w-full"
                 />
               </div>
@@ -116,12 +175,16 @@ export default function GenerateLinkPage() {
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
+                  min={startDate || new Date().toISOString().split('T')[0]}
                   className="w-full"
                 />
               </div>
             </div>
 
-            <Button onClick={handleGenerateLink} className="w-full bg-[#A8C947] text-white hover:bg-[#97B83B]">
+            <Button 
+              onClick={handleGenerateLink}
+              className="w-full bg-[#A8C947] text-white hover:bg-[#97B83B]"
+            >
               Link generieren
             </Button>
           </CardContent>

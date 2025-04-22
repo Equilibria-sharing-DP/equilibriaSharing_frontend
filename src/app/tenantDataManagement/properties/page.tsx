@@ -1,38 +1,138 @@
-import { PropertyCard } from "@/components/tenantDataManagementComponents/PropertyCard"
-import { Navbar } from "@/components/tenantDataManagementComponents/navbar"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import propertiesData from "../data/properties.json"
+"use client";
 
-export default function PropertiesPage({ searchParams,}: {searchParams?: { country?: string }}) {
-  const country = searchParams?.country
+import { useEffect, useState } from 'react';
+import { accommodationService } from '@/services/accommodationService';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
-  // Filter properties based on country parameter
-  const filteredProperties = country
-    ? propertiesData.filter((property) => property.address.country === country)
-    : propertiesData
+interface Accommodation {
+  id: number;
+  name: string;
+  type: string;
+  description: string;
+  maxGuests: number;
+  pricePerNight: number;
+  pictureUrls: string[];
+  street: string;
+  houseNumber: string;
+  postalCode: string;
+  city: string;
+  country: string;
+  addressAdditional?: string;
+}
+
+export default function PropertiesPage() {
+  const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadAccommodations();
+  }, []);
+
+  const loadAccommodations = async () => {
+    try {
+      const data = await accommodationService.getAllAccommodations();
+      setAccommodations(data);
+      setError(null);
+    } catch (err) {
+      setError('Fehler beim Laden der Immobilien');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (window.confirm('Möchten Sie diese Immobilie wirklich löschen?')) {
+      try {
+        await accommodationService.deleteAccommodation(id);
+        setAccommodations(accommodations.filter(acc => acc.id !== id));
+      } catch (err) {
+        setError('Fehler beim Löschen der Immobilie');
+        console.error(err);
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center p-4">
+        <p className="text-red-500">{error}</p>
+        <Button onClick={loadAccommodations} className="mt-4">
+          Erneut versuchen
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">{country ? `Immobilien in ${country}` : "Immobilien Übersicht"}</h1>
-          <div className="flex space-x-3">
-            <Link href="/tenantDataManagement/properties/generate-link">
-                <Button className="bg-[#A8C947] text-white hover:bg-[#97B83B]">Link generieren</Button>
-            </Link>
-            <Link href="/tenantDataManagement/properties/add">
-              <Button className="bg-[#A8C947] text-white hover:bg-[#97B83B]">Immobilie hinzufügen</Button>
-            </Link>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProperties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Immobilien Übersicht</h1>
+        <div className="flex space-x-3">
+          <Link href="/tenantDataManagement/properties/generate-link">
+            <Button className="bg-[#A8C947] text-white hover:bg-[#97B83B]">
+              Link generieren
+            </Button>
+          </Link>
+          <Button 
+            className="bg-[#A8C947] text-white hover:bg-[#97B83B]"
+            onClick={() => window.location.href = '/tenantDataManagement/properties/add'}
+          >
+            Neue Immobilie
+          </Button>
         </div>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {accommodations.map((accommodation) => (
+          <Card key={accommodation.id} className="flex flex-col">
+            <CardHeader>
+              <CardTitle>{accommodation.name}</CardTitle>
+              <CardDescription>{accommodation.type}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <p>{accommodation.description}</p>
+                <p className="font-semibold">€{accommodation.pricePerNight} pro Nacht</p>
+                <p>Max. Gäste: {accommodation.maxGuests}</p>
+                <p className="text-sm">
+                  {accommodation.street} {accommodation.houseNumber}<br />
+                  {accommodation.postalCode} {accommodation.city}<br />
+                  {accommodation.country}
+                </p>
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-end mt-auto">
+              <Button 
+                variant="outline" 
+                className="mr-2"
+                onClick={() => window.location.href = `/tenantDataManagement/properties/edit/${accommodation.id}`}
+              >
+                Bearbeiten
+              </Button>
+              <Button 
+                variant="destructive"
+                onClick={() => handleDelete(accommodation.id)}
+              >
+                Löschen
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
     </div>
-  )
+  );
 }
 
