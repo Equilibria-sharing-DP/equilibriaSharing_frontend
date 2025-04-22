@@ -8,8 +8,10 @@ export function Navigation() {
   const router = useRouter()
 
   const handleLogout = () => {
-    // Hier würden Sie die Logout-Logik implementieren
-    // z.B. Token löschen, Session beenden, etc.
+    // Hier können wir später Token oder Session-Daten löschen
+    // Zum Beispiel: localStorage.removeItem('token')
+    
+    // Zur Login-Seite weiterleiten
     router.push("/tenantDataManagement/login")
   }
 
@@ -17,12 +19,16 @@ export function Navigation() {
     <nav className="bg-gray-800 text-white p-4">
       <ul className="flex justify-between items-center">
         <li>
-          <Link href="/" className="text-xl font-bold">
+          <Link href="/tenantDataManagement/properties" className="text-xl font-bold">
             Immobilien Verwaltung
           </Link>
         </li>
         <li>
-          <Button onClick={handleLogout} variant="ghost">
+          <Button 
+            onClick={handleLogout} 
+            variant="ghost"
+            className="hover:bg-gray-700"
+          >
             Abmelden
           </Button>
         </li>

@@ -3,11 +3,28 @@ import createNextIntlPlugin from 'next-intl/plugin';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ["images.pexels.com", "t4.ftcdn.net", "img.freepik.com"],
         remotePatterns: [
             {
                 protocol: "https",
                 hostname: "hebbkx1anhila5yf.public.blob.vercel-storage.com",
+                port: "",
+                pathname: "/**",
+            },
+            {
+                protocol: "https",
+                hostname: "images.pexels.com",
+                port: "",
+                pathname: "/**",
+            },
+            {
+                protocol: "https",
+                hostname: "t4.ftcdn.net",
+                port: "",
+                pathname: "/**",
+            },
+            {
+                protocol: "https",
+                hostname: "img.freepik.com",
                 port: "",
                 pathname: "/**",
             },

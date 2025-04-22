@@ -1,20 +1,49 @@
 import { NextResponse } from "next/server"
 
-const validUsers = [
-  { email: "akoenig@equilibria.com", password: "Koenig123" },
-  { email: "cfojtl@equilibria.com", password: "Fojtl123" },
-  { email: "chauser@equilibria.com", password: "Hauser123" },
-]
-
 export async function POST(request: Request) {
-  const { email, password } = await request.json()
+  const { username, password } = await request.json()
 
-  const user = validUsers.find((u) => u.email === email && u.password === password)
+  try {
+    console.log("Versuche Verbindung zum Backend herzustellen...")
+    const response = await fetch('http://localhost:8080/api/v1/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ username, password }),
+    })
 
-  if (user) {
-    // In a real application, you would generate and return a JWT token here
-    return NextResponse.json({ success: true })
-  } else {
-    return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 })
+    console.log("Backend-Antwort Status:", response.status)
+
+    // Lese die Antwort zuerst als Text
+    const responseText = await response.text()
+    console.log("Backend-Antwort Text:", responseText)
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { success: false, message: responseText || "Invalid credentials" },
+        { status: 401 }
+      )
+    }
+
+    // Versuche den Text als JSON zu parsen, falls möglich
+    try {
+      const data = JSON.parse(responseText)
+      return NextResponse.json({ success: true, data })
+    } catch {
+      // Wenn es kein JSON ist, sende den Text als Erfolgsmeldung
+      return NextResponse.json({ 
+        success: true, 
+        data: { message: responseText } 
+      })
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error"
+    console.error("Fehler beim Verbinden zum Backend:", message)
+    return NextResponse.json(
+      { success: false, message: "Server error", details: message },
+      { status: 500 }
+    )
   }
 }

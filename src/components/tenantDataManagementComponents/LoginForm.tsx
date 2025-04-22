@@ -7,28 +7,36 @@ import { Input } from "@/components/ui/input"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 
 export function LoginForm() {
-  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
 
-  const validUsers = [
-    { email: "akoenig@equilibria.com", password: "Koenig123" },
-    { email: "cfojtl@equilibria.com", password: "Fojtl123" },
-    { email: "chauser@equilibria.com", password: "Hauser123" },
-  ]
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
 
-    const user = validUsers.find((u) => u.email === email && u.password === password)
+    try {
+      const response = await fetch('/tenantDataManagement/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      })
 
-    if (user) {
-      router.push("./properties")
-    } else {
-      setError("Ungültige E-Mail oder Passwort")
+      
+
+      const data = await response.json()
+
+      if (data.success) {
+        router.push("./properties")
+      } else {
+        setError(data.message || "Ungültiger Benutzername oder Passwort")
+      }
+    } catch (error) {
+      setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.")
     }
   }
 
@@ -39,17 +47,17 @@ export function LoginForm() {
         <p className="text-gray-600">To access your account</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form className="space-y-6">
         <div className="space-y-2">
-          <label className="text-sm text-gray-600" htmlFor="email">
-            E-Mail
+          <label className="text-sm text-gray-600" htmlFor="username">
+            Benutzername
           </label>
           <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="name@equilibria.com"
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Benutzername"
             required
             className="w-full p-2 border rounded-md"
           />
@@ -80,11 +88,14 @@ export function LoginForm() {
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        <Button type="submit" className="w-full bg-[#A8C947] hover:bg-[#97B83B] text-white">
+        <Button 
+          type="button" 
+          onClick={handleSubmit}
+          className="w-full bg-[#A8C947] hover:bg-[#97B83B] text-white"
+        >
           LOG IN
         </Button>
       </form>
     </div>
   )
 }
-
