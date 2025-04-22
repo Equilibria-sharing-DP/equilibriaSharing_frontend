@@ -48,11 +48,16 @@ export default function PropertiesPage() {
   const handleDelete = async (id: number) => {
     if (window.confirm('Möchten Sie diese Immobilie wirklich löschen?')) {
       try {
+        setLoading(true);
         await accommodationService.deleteAccommodation(id);
-        setAccommodations(accommodations.filter(acc => acc.id !== id));
+        const updatedAccommodations = accommodations.filter(acc => acc.id !== id);
+        setAccommodations(updatedAccommodations);
+        alert('Immobilie wurde erfolgreich gelöscht');
       } catch (err) {
-        setError('Fehler beim Löschen der Immobilie');
-        console.error(err);
+        console.error('Fehler beim Löschen:', err);
+        setError('Fehler beim Löschen der Immobilie. Bitte stellen Sie sicher, dass Sie eingeloggt sind.');
+      } finally {
+        setLoading(false);
       }
     }
   };

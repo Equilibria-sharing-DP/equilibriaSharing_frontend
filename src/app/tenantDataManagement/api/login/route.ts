@@ -27,17 +27,12 @@ export async function POST(request: Request) {
       )
     }
 
-    // Versuche den Text als JSON zu parsen, falls möglich
-    try {
-      const data = JSON.parse(responseText)
-      return NextResponse.json({ success: true, data })
-    } catch {
-      // Wenn es kein JSON ist, sende den Text als Erfolgsmeldung
-      return NextResponse.json({ 
-        success: true, 
-        data: { message: responseText } 
-      })
-    }
+    // Der Token kommt direkt als Text vom Backend
+    return NextResponse.json({ 
+      success: true, 
+      data: responseText // Der Token wird direkt weitergeleitet
+    })
+    
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error"
     console.error("Fehler beim Verbinden zum Backend:", message)

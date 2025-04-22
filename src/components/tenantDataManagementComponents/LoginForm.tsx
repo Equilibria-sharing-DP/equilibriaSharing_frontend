@@ -26,11 +26,17 @@ export function LoginForm() {
         body: JSON.stringify({ username, password }),
       })
 
-      
-
       const data = await response.json()
 
       if (data.success) {
+        // Speichere den Token im LocalStorage
+        if (data.data && typeof data.data === 'string') {
+          localStorage.setItem('token', data.data);
+        } else if (data.data && data.data.token) {
+          localStorage.setItem('token', data.data.token);
+        } else if (data.data && data.data.message) {
+          localStorage.setItem('token', data.data.message);
+        }
         router.push("./properties")
       } else {
         setError(data.message || "Ungültiger Benutzername oder Passwort")
