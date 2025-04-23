@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react"
 import { bookingService } from "@/services/bookingService"
 import { accommodationService } from "@/services/accommodationService"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -50,6 +50,7 @@ export default function PropertyBookingsPage({ params }: { params: { id: string 
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
     const loadData = async () => {
@@ -83,6 +84,22 @@ export default function PropertyBookingsPage({ params }: { params: { id: string 
 
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'dd.MM.yyyy', { locale: de })
+  }
+
+  const nextImage = () => {
+    if (accommodation && accommodation.pictureUrls.length > 0) {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === accommodation.pictureUrls.length - 1 ? 0 : prevIndex + 1
+      )
+    }
+  }
+
+  const previousImage = () => {
+    if (accommodation && accommodation.pictureUrls.length > 0) {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === 0 ? accommodation.pictureUrls.length - 1 : prevIndex - 1
+      )
+    }
   }
 
   if (loading) {
@@ -131,6 +148,49 @@ export default function PropertyBookingsPage({ params }: { params: { id: string 
         </Button>
         <h1 className="text-3xl font-bold">{accommodation.name}</h1>
       </div>
+
+      {accommodation.pictureUrls && accommodation.pictureUrls.length > 0 && (
+        <div className="mb-8 relative rounded-lg overflow-hidden">
+          <div className="aspect-[16/9] relative">
+            <img
+              src={accommodation.pictureUrls[currentImageIndex]}
+              alt={`${accommodation.name} - Bild ${currentImageIndex + 1}`}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          {accommodation.pictureUrls.length > 1 && (
+            <>
+              <Button
+                onClick={previousImage}
+                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white"
+                size="icon"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </Button>
+              <Button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white"
+                size="icon"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </Button>
+              
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {accommodation.pictureUrls.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                    }`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
       <div className="mb-8">
         <Card>

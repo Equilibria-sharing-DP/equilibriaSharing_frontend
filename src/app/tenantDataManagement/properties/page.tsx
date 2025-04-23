@@ -29,6 +29,7 @@ export default function PropertiesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState<number | null>(null);
 
   useEffect(() => {
     loadAccommodations();
@@ -50,7 +51,7 @@ export default function PropertiesPage() {
   const handleDelete = async (id: number) => {
     if (window.confirm('Möchten Sie diese Immobilie wirklich löschen?')) {
       try {
-        setLoading(true);
+        setIsDeleting(id);
         await accommodationService.deleteAccommodation(id);
         const updatedAccommodations = accommodations.filter(acc => acc.id !== id);
         setAccommodations(updatedAccommodations);
@@ -127,7 +128,7 @@ export default function PropertiesPage() {
                 className="mr-2"
                 onClick={() => router.push(`/tenantDataManagement/properties/${accommodation.id}`)}
               >
-                Bearbeiten
+                Details
               </Button>
               <Button 
                 variant="destructive"
