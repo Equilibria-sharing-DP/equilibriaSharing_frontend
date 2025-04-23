@@ -1,203 +1,200 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { BookingList } from "@/components/tenantDataManagementComponents/BookingList"
-import { bookings } from "@/app/tenantDataManagement/data/bookings"
-import Image from "next/image"
-import { ArrowLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
-import propertiesData from "../../data/properties.json"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft } from "lucide-react"
+import { bookingService } from "@/services/bookingService"
+import { accommodationService } from "@/services/accommodationService"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { format } from "date-fns"
+import { de } from "date-fns/locale"
 
-interface Property {
-  id: number
-  name: string
-  type: string
-  description: string
-  address: {
-    street: string
-    houseNumber: number
-    addressAdditional: string
-    city: string
-    postalCode: string
-    country: string
-  }
-  maxGuests: number
-  pricePerNight: number
-  images: string[]
+interface Accommodation {
+  id: number;
+  name: string;
+  type: string;
+  description: string;
+  street: string;
+  houseNumber: string;
+  postalCode: string;
+  city: string;
+  country: string;
+  addressAdditional?: string;
+  maxGuests: number;
+  pricePerNight: number;
+  pictureUrls: string[];
 }
 
-export default function PropertyDetailsPage({ params }: { params: { id: string } }) {
+interface Booking {
+  id: number;
+  accommodationId: number;
+  mainTraveler: {
+    firstName: string;
+    lastName: string;
+    gender: string;
+    birthDate: string;
+  };
+  checkIn: string;
+  expectedCheckOut: string;
+  additionalGuests?: {
+    firstName: string;
+    lastName: string;
+    birthDate: string;
+  }[];
+}
+
+export default function PropertyBookingsPage({ params }: { params: { id: string } }) {
   const router = useRouter()
-  const [property, setProperty] = useState<Property | null>(null)
-
-  const [filterDates, setFilterDates] = useState({ startDate: "", endDate: "" })
-  const [filteredBookings, setFilteredBookings] = useState(bookings)
-  const [isFiltered, setIsFiltered] = useState(false)
-
-  const applyFilter = () => {
-    if (!filterDates.startDate && !filterDates.endDate) {
-      setFilteredBookings(bookings)
-      setIsFiltered(false)
-      return
-    }
-
-    const filtered = bookings.filter((booking) => {
-      // Convert date strings to comparable format
-      const bookingStart = convertDateStringToDate(booking.startDate)
-      const bookingEnd = convertDateStringToDate(booking.endDate)
-      const filterStart = filterDates.startDate ? new Date(filterDates.startDate) : null
-      const filterEnd = filterDates.endDate ? new Date(filterDates.endDate) : null
-
-      // If only start date is provided
-      if (filterStart && !filterEnd) {
-        return bookingStart >= filterStart || bookingEnd >= filterStart
-      }
-
-      // If only end date is provided
-      if (!filterStart && filterEnd) {
-        return bookingStart <= filterEnd || bookingEnd <= filterEnd
-      }
-
-      // If both dates are provided
-      if (filterStart && filterEnd) {
-        // Check if booking period overlaps with filter period
-        return bookingStart <= filterEnd && bookingEnd >= filterStart
-      }
-
-      return true
-    })
-
-    setFilteredBookings(filtered)
-    setIsFiltered(true)
-  }
-
-  const resetFilter = () => {
-    setFilterDates({ startDate: "", endDate: "" })
-    setFilteredBookings(bookings)
-    setIsFiltered(false)
-  }
-
-  // Helper function to convert DD.MM.YYYY to Date object
-  const convertDateStringToDate = (dateStr: string) => {
-    const [day, month, year] = dateStr.split(".")
-    return new Date(`${year}-${month}-${day}`)
-  }
+  const [accommodation, setAccommodation] = useState<Accommodation | null>(null)
+  const [bookings, setBookings] = useState<Booking[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const propertyId = Number(params.id)
-    const foundProperty = propertiesData.find((p) => p.id === propertyId)
-
-    if (foundProperty) {
-      setProperty(foundProperty)
-    } else {
-      // If property not found, redirect to properties list
-      router.push("/properties")
+    const loadData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        // Zuerst Immobiliendaten laden
+        const accommodationData = await accommodationService.getAccommodationById(Number(params.id))
+        console.log('DATEN VON DER IMMOBILIE:', {
+          street: accommodationData.street,
+          city: accommodationData.city,
+          country: accommodationData.country,
+          postalCode: accommodationData.postalCode
+        })
+        setAccommodation(accommodationData)
+        
+        // Dann Buchungsdaten laden
+        const bookingsData = await bookingService.getBookingsByAccommodationId(Number(params.id))
+        setBookings(bookingsData)
+      } catch (err) {
+        console.error('Fehler beim Laden der Daten:', err)
+        setError('Fehler beim Laden der Daten. Bitte stellen Sie sicher, dass Sie eingeloggt sind.')
+      } finally {
+        setLoading(false)
+      }
     }
-  }, [params.id, router])
 
-  if (!property) {
-    return <div>Loading...</div>
+    loadData()
+  }, [params.id])
+
+  const formatDate = (dateString: string) => {
+    return format(new Date(dateString), 'dd.MM.yyyy', { locale: de })
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#A8C947]"></div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+          {error}
+        </div>
+      </div>
+    )
+  }
+
+  if (!accommodation) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <p>Immobilie nicht gefunden</p>
+          <Button
+            onClick={() => router.push("/tenantDataManagement/properties")}
+            className="mt-4 bg-[#A8C947] text-white hover:bg-[#97B83B]"
+          >
+            Zurück zur Übersicht
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div>
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center mb-4">
-            <Button
-              onClick={() => router.push("/tenantDataManagement/properties")}
-              className="mr-4 p-2 rounded-full bg-[#A8C947] text-white hover:bg-[#97B83B]"
-              size="icon"
-            >
-              <ArrowLeft size={20} />
-            </Button>
-            <h1 className="text-4xl font-bold">{property.name.toUpperCase()}</h1>
-          </div>
-          <div className="text-xl mb-2">
-            {property.address.country}, {property.address.city}
-          </div>
-          <div className="text-gray-600 mb-6">
-            Adresse: {property.address.street} {property.address.houseNumber}
-            {property.address.addressAdditional && `, ${property.address.addressAdditional}`}
-          </div>
-
-          {/* Image Gallery */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="md:col-span-2">
-              <Image
-                src={property.images[0] || "/placeholder.svg"}
-                alt={`${property.name} - Main view`}
-                width={800}
-                height={600}
-                className="rounded-lg w-full h-[400px] object-cover"
-              />
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-1 gap-4">
-              <Image
-                src={property.images[1] || "/placeholder.svg"}
-                alt={`${property.name} - Secondary view`}
-                width={400}
-                height={300}
-                className="rounded-lg w-full h-[190px] object-cover"
-              />
-              <Image
-                src={property.images[2] || "/placeholder.svg"}
-                alt={`${property.name} - Third view`}
-                width={400}
-                height={300}
-                className="rounded-lg w-full h-[190px] object-cover"
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-            <h2 className="text-2xl font-bold">Buchungen</h2>
-            <div className="mt-2 md:mt-0 flex flex-col md:flex-row gap-2 items-end">
-              <div className="flex flex-col">
-                <label htmlFor="startDate" className="text-sm text-foreground/70 dark:text-gray-300 mb-1">
-                  Von
-                </label>
-                <input
-                  id="startDate"
-                  type="date"
-                  className="px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-background dark:bg-gray-800 text-sm"
-                  onChange={(e) => {
-                    const newStartDate = e.target.value
-                    setFilterDates((prev) => ({ ...prev, startDate: newStartDate }))
-                  }}
-                  value={filterDates.startDate}
-                />
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="endDate" className="text-sm text-foreground/70 dark:text-gray-300 mb-1">
-                  Bis
-                </label>
-                <input
-                  id="endDate"
-                  type="date"
-                  className="px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-background dark:bg-gray-800 text-sm"
-                  onChange={(e) => {
-                    const newEndDate = e.target.value
-                    setFilterDates((prev) => ({ ...prev, endDate: newEndDate }))
-                  }}
-                  value={filterDates.endDate}
-                />
-              </div>
-              <Button onClick={applyFilter} className="bg-[#A8C947] text-white hover:bg-[#97B83B] h-8">
-                Filter anwenden
-              </Button>
-              {isFiltered && (
-                <Button onClick={resetFilter} variant="outline" className="h-8 border-gray-300 dark:border-gray-600">
-                  Zurücksetzen
-                </Button>
-              )}
-            </div>
-          </div>
-
-          <BookingList bookings={filteredBookings} />
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex items-center mb-6">
+        <Button
+          onClick={() => router.push("/tenantDataManagement/properties")}
+          className="mr-4 p-2 rounded-full bg-[#A8C947] text-white hover:bg-[#97B83B]"
+          size="icon"
+        >
+          <ArrowLeft size={20} />
+        </Button>
+        <h1 className="text-3xl font-bold">{accommodation.name}</h1>
       </div>
+
+      <div className="mb-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Immobiliendetails</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p><span className="font-semibold">Typ:</span> {accommodation.type}</p>
+                <p><span className="font-semibold">Max. Gäste:</span> {accommodation.maxGuests}</p>
+                <p><span className="font-semibold">Preis pro Nacht:</span> €{accommodation.pricePerNight}</p>
+                <p><span className="font-semibold">Adresse:</span> {accommodation.street} {accommodation.houseNumber}</p>
+                <p><span className="font-semibold">PLZ:</span> {accommodation.postalCode}</p>
+                <p><span className="font-semibold">Stadt:</span> {accommodation.city}</p>
+                <p><span className="font-semibold">Land:</span> {accommodation.country}</p>
+              </div>
+            </div>
+            <div className="mt-4">
+              <p className="font-semibold">Beschreibung:</p>
+              <p>{accommodation.description}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <h2 className="text-2xl font-bold mb-4">Buchungen</h2>
+      
+      {bookings.length === 0 ? (
+        <p className="text-gray-500">Keine Buchungen vorhanden</p>
+      ) : (
+        <div className="grid gap-4">
+          {bookings.map((booking) => (
+            <Card key={booking.id}>
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="font-semibold">Hauptreisender:</p>
+                    <p>{booking.mainTraveler.firstName} {booking.mainTraveler.lastName}</p>
+                    <p>Geburtsdatum: {formatDate(booking.mainTraveler.birthDate)}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Aufenthalt:</p>
+                    <p>Check-in: {formatDate(booking.checkIn)}</p>
+                    <p>Check-out: {formatDate(booking.expectedCheckOut)}</p>
+                  </div>
+                </div>
+                {booking.additionalGuests && booking.additionalGuests.length > 0 && (
+                  <div className="mt-4">
+                    <p className="font-semibold">Weitere Gäste:</p>
+                    <ul className="list-disc list-inside">
+                      {booking.additionalGuests.map((guest, index) => (
+                        <li key={index}>
+                          {guest.firstName} {guest.lastName} (Geb.: {formatDate(guest.birthDate)})
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

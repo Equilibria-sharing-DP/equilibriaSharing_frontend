@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 interface Accommodation {
   id: number;
@@ -27,6 +28,7 @@ export default function PropertiesPage() {
   const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     loadAccommodations();
@@ -83,14 +85,14 @@ export default function PropertiesPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Immobilien Übersicht</h1>
-        <div className="flex space-x-3">
-          <Link href="/tenantDataManagement/properties/generate-link">
+          <div className="flex space-x-3">
+            <Link href="/tenantDataManagement/properties/generate-link">
             <Button className="bg-[#A8C947] text-white hover:bg-[#97B83B]">
               Link generieren
             </Button>
-          </Link>
+            </Link>
           <Button 
             className="bg-[#A8C947] text-white hover:bg-[#97B83B]"
             onClick={() => window.location.href = '/tenantDataManagement/properties/add'}
@@ -123,7 +125,7 @@ export default function PropertiesPage() {
               <Button 
                 variant="outline" 
                 className="mr-2"
-                onClick={() => window.location.href = `/tenantDataManagement/properties/edit/${accommodation.id}`}
+                onClick={() => router.push(`/tenantDataManagement/properties/${accommodation.id}`)}
               >
                 Bearbeiten
               </Button>

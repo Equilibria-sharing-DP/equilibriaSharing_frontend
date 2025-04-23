@@ -19,7 +19,14 @@ const BASE_URL = 'http://localhost:8080/api/v1';
 export const accommodationService = {
   // Alle Immobilien abrufen
   async getAllAccommodations(): Promise<Accommodation[]> {
-    const response = await fetch(`${BASE_URL}/accommodations`);
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}/accommodations`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
     if (!response.ok) {
       throw new Error('Fehler beim Laden der Immobilien');
     }
@@ -28,11 +35,41 @@ export const accommodationService = {
 
   // Eine spezifische Immobilie abrufen
   async getAccommodationById(id: number): Promise<Accommodation> {
-    const response = await fetch(`${BASE_URL}/accommodations/${id}`);
-    if (!response.ok) {
-      throw new Error('Immobilie nicht gefunden');
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`${BASE_URL}/accommodations/${id}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Immobilie nicht gefunden');
+      }
+      
+      const data = await response.json();
+      console.log('Rohdaten von der API:', data);
+      return {
+        id: data.id,
+        name: data.name,
+        type: data.type,
+        description: data.description,
+        street: data.address?.street || '',
+        houseNumber: data.address?.houseNumber || '',
+        postalCode: data.address?.postalCode || '',
+        city: data.address?.city || '',
+        country: data.address?.country || '',
+        addressAdditional: data.address?.addressAdditional,
+        maxGuests: data.maxGuests,
+        pricePerNight: data.pricePerNight,
+        pictureUrls: data.pictureUrls || []
+      };
+    } catch (error) {
+      console.error('Fehler beim Abrufen der Immobilie:', error);
+      throw error;
     }
-    return response.json();
   },
 
   // Neue Immobilie erstellen (erfordert Authentifizierung)
