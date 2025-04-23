@@ -138,15 +138,23 @@ export default function PropertyBookingsPage({ params }: { params: { id: string 
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center mb-6">
+      <div className="flex items-center mb-6 justify-between">
+        <div className="flex items-center">
+          <Button
+            onClick={() => router.push("/tenantDataManagement/properties")}
+            className="mr-4 p-2 rounded-full bg-[#A8C947] text-white hover:bg-[#97B83B]"
+            size="icon"
+          >
+            <ArrowLeft size={20} />
+          </Button>
+          <h1 className="text-3xl font-bold">{accommodation.name}</h1>
+        </div>
         <Button
-          onClick={() => router.push("/tenantDataManagement/properties")}
-          className="mr-4 p-2 rounded-full bg-[#A8C947] text-white hover:bg-[#97B83B]"
-          size="icon"
+          onClick={() => router.push(`/tenantDataManagement/properties/${accommodation.id}/edit`)}
+          className="bg-[#A8C947] text-white hover:bg-[#97B83B]"
         >
-          <ArrowLeft size={20} />
+          Bearbeiten
         </Button>
-        <h1 className="text-3xl font-bold">{accommodation.name}</h1>
       </div>
 
       {accommodation.pictureUrls && accommodation.pictureUrls.length > 0 && (
